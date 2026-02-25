@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+    <div class="mb-6 flex items-center">
+        <a href="/" class="text-slate-500 hover:text-slate-700 mr-4 transition-colors">
+            <i class="fa-solid fa-arrow-left text-xl"></i>
+        </a>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Yeni Ölçüm Ekle</h1>
+    </div>
+
+    <div class="glass-panel overflow-hidden sm:rounded-2xl shadow-sm transition-all p-6 sm:p-8">
+        <form action="/add-measurement" method="POST" class="space-y-6">
+
+            <div>
+                <label for="value" class="block text-sm font-medium text-slate-700 mb-2">Şeker Değeri (mg/dL)</label>
+                <div class="relative">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <i class="fa-solid fa-droplet text-red-400 text-xl"></i>
+                    </div>
+                    <input type="number" name="value" id="value" required min="20" max="600"
+                        class="block w-full rounded-xl border-slate-300 pl-12 pr-4 py-4 focus:border-blue-500 focus:ring-blue-500 text-2xl font-medium shadow-sm transition-colors border"
+                        placeholder="Örn: 105">
+                </div>
+            </div>
+
+            <div>
+                <label for="measured_at" class="block text-sm font-medium text-slate-700 mb-2">Tarih ve Saat</label>
+                <input type="datetime-local" name="measured_at" id="measured_at" required
+                    class="block w-full rounded-xl border border-slate-300 px-4 py-4 focus:border-blue-500 focus:ring-blue-500 text-lg shadow-sm transition-colors">
+            </div>
+
+            <div>
+                <label for="category" class="block text-sm font-medium text-slate-700 mb-2">Zaman / Kategori</label>
+                <select id="category" name="category" required
+                    class="block w-full rounded-xl border border-slate-300 px-4 py-4 focus:border-blue-500 focus:ring-blue-500 text-lg shadow-sm transition-colors bg-white">
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="notes" class="block text-sm font-medium text-slate-700 mb-2">Notlar (Opsiyonel)</label>
+                <textarea id="notes" name="notes" rows="3"
+                    class="block w-full border rounded-xl border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors text-lg"
+                    placeholder="Nasıl hissediyorsunuz?"></textarea>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit"
+                    class="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform active:scale-95">
+                    <i class="fa-solid fa-check mr-2 mt-1"></i> Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        const datetimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+        document.getElementById('measured_at').value = datetimeString;
+    });
+</script>
+{% endblock %}

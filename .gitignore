@@ -1,0 +1,38 @@
+# Python and environment
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.venv
+*.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Databases
+*.db
+*.sqlite3
+diabetes_tracker.db
+
+# Reports/Temp
+temp/
+*.xlsx
+*.csv
+
+# IDEs and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+logs/
+*.log
+
+# Pytest / coverage
+.pytest_cache/
+htmlcov/
+.coverage
+.tox/

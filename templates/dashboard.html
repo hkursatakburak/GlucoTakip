@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Özetiniz</h1>
+            <p class="mt-1 text-sm text-slate-500">Değerlerinizi buradan takip edebilirsiniz.</p>
+        </div>
+        <div>
+            <a href="/add-measurement"
+                class="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all transform active:scale-95 text-center w-full sm:w-auto">
+                <i class="fa-solid fa-plus mr-2"></i> Yeni Ölçüm Ekle
+            </a>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-slate-900">Şeker Grafiği</h3>
+            <div class="flex bg-slate-100 p-1 rounded-lg">
+                <button onclick="updateChart('week')" id="btn-week"
+                    class="px-3 py-1 text-sm font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">7
+                    Gün</button>
+                <button onclick="updateChart('month')" id="btn-month"
+                    class="px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all">30
+                    Gün</button>
+            </div>
+        </div>
+        <div class="h-64 sm:h-80 w-full relative">
+            <canvas id="bloodSugarChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Measurements List -->
+    <div>
+        <h3 class="text-lg font-medium text-slate-900 mb-4">Son Ölçümler</h3>
+        <div class="glass-panel shadow-sm overflow-hidden sm:rounded-xl">
+            {% if measurements %}
+            <ul class="divide-y divide-slate-200">
+                {% for m in measurements[:10] %}
+                <li class="p-4 sm:p-6 hover:bg-slate-50/50 transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full 
+                                {% if m.value < 70 %} bg-yellow-100 text-yellow-600 
+                                {% elif m.value > 140 %} bg-red-100 text-red-600 
+                                {% else %} bg-green-100 text-green-600 {% endif %}">
+                                <span class="text-lg font-bold">{{ m.value }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-900">{{ m.category.value }}</p>
+                                <p class="text-xs text-slate-500">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                            </div>
+                        </div>
+                        {% if m.notes %}
+                        <div class="hidden sm:block text-sm text-slate-500 pr-4 italic">
+                            "{{ m.notes }}"
+                        </div>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="p-8 text-center text-slate-500">
+                <i class="fa-solid fa-clipboard-list text-4xl mb-3 text-slate-300"></i>
+                <p>Henüz bir ölçüm bulunmuyor. Yeni bir kayıt ekleyin.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="glass-panel rounded-2xl p-6 shadow-sm border border-slate-200 border-t mt-4">
+        <h3 class="text-lg font-medium text-slate-900 mb-4">Rapor Çıktısı Al (Excel)</h3>
+        <form action="/export" method="POST" class="flex flex-col sm:flex-row gap-4 items-end">
+            <div class="w-full sm:w-64">
+                <label for="date_range" class="block text-sm font-medium text-slate-700 mb-1">Tarih Aralığı</label>
+                <select id="date_range" name="date_range"
+                    class="block w-full rounded-xl border-slate-300 py-3 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm border bg-white">
+                    <option value="7">Son 7 Gün</option>
+                    <option value="30">Son 1 Ay</option>
+                    <option value="90">Son 3 Ay</option>
+                    <option value="all">Tüm Zamanlar</option>
+                </select>
+            </div>
+            <button type="submit"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors">
+                <i class="fa-solid fa-file-excel mr-2"></i> Excel İndir
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<!-- Pass data to JS -->
+<script id="chartData" type="application/json">
+    {{ chart_data | tojson | safe }}
+</script>
+
+<script>
+    const chartData = JSON.parse(document.getElementById('chartData').textContent);
+    let chartInstance = null;
+
+    // Sort array by date for the chart to read left-to-right correctly
+    chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    function prepareData(days) {
+        if (chartData.length === 0) return { labels: [], dataset: [] };
+
+        const now = new Date();
+        const cutoff = new Date();
+        cutoff.setDate(now.getDate() - days);
+
+        let filteredData = chartData.filter(item => new Date(item.date) >= cutoff);
+        // If empty after filter (e.g., all data is older), just show all if we want, or leave empty
+        if (filteredData.length === 0 && chartData.length > 0 && days === 30) {
+            filteredData = chartData;
+        }
+
+        return {
+            labels: filteredData.map(d => {
+                const dt = new Date(d.date);
+                return `${dt.getDate()}/${dt.getMonth() + 1} ${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+            }),
+            dataset: filteredData.map(d => d.value)
+        };
+    }
+
+    function initChart(data) {
+        const ctx = document.getElementById('bloodSugarChart').getContext('2d');
+
+        // Gradient for line
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // blue-500
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Şeker Değeri (mg/dL)',
+                    data: data.dataset,
+                    borderColor: '#3b82f6', // blue-500
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#3b82f6',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4 // Smooth curves
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 13, family: "'Inter', sans-serif" },
+                        bodyFont: { size: 14, weight: 'bold', family: "'Inter', sans-serif" },
+                        displayColors: false,
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.y + ' mg/dL';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif", size: 11 },
+                            color: '#64748b',
+                            maxTicksLimit: 7
+                        }
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9', drawBorder: false },
+                        beginAtZero: false,
+                        suggestedMin: 60,
+                        suggestedMax: 200,
+                        ticks: {
+                            font: { family: "'Inter', sans-serif", size: 12 },
+                            color: '#64748b',
+                            stepSize: 40
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            }
+        });
+    }
+
+    function updateChart(period) {
+        const btnWeek = document.getElementById('btn-week');
+        const btnMonth = document.getElementById('btn-month');
+
+        // Update Buttons Styling
+        if (period === 'week') {
+            btnWeek.className = "px-3 py-1 text-sm font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all";
+            btnMonth.className = "px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all";
+        } else {
+            btnMonth.className = "px-3 py-1 text-sm font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all";
+            btnWeek.className = "px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all";
+        }
+
+        const days = period === 'week' ? 7 : 30;
+        const newData = prepareData(days);
+
+        if (chartInstance) {
+            chartInstance.data.labels = newData.labels;
+            chartInstance.data.datasets[0].data = newData.dataset;
+            chartInstance.update();
+        } else {
+            initChart(newData);
+        }
+    }
+
+    // Initialize with 7 days view
+    document.addEventListener("DOMContentLoaded", () => {
+        updateChart('week');
+    });
+</script>
+{% endblock %}

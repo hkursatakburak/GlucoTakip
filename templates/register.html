@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <i class="fa-solid fa-user-plus text-blue-500 text-5xl mb-4"></i>
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">Kayıt Ol</h2>
+        <p class="mt-2 text-sm text-slate-600">
+            Zaten hesabınız var mı?
+            <a href="/login" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">Giriş Yap</a>
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="glass-panel py-8 px-4 sm:px-10 rounded-2xl">
+            {% if error %}
+            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fa-solid fa-circle-exclamation text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-red-700">{{ error }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <form class="space-y-6" action="/register" method="POST">
+                <div>
+                    <label for="full_name" class="block text-sm font-medium text-slate-700">Ad Soyad</label>
+                    <div class="mt-1">
+                        <input id="full_name" name="full_name" type="text" required
+                            class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-700">E-posta Adresi</label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" autocomplete="email" required
+                            class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-slate-700">Şifre</label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required
+                            class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
+                    </div>
+                </div>
+
+                <div class="flex items-start mt-4">
+                    <div class="flex h-5 items-center">
+                        <input id="data_consent" name="data_consent" type="checkbox" value="true"
+                            class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="data_consent" class="font-medium text-slate-700">Bilimsel İzin</label>
+                        <p class="text-slate-500 text-xs mt-1">Verilerimin anonim olarak bilimsel çalışmalarda
+                            kullanılmasına izin veriyorum. (İsteğe bağlı)</p>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit"
+                        class="flex w-full justify-center rounded-xl border border-transparent bg-blue-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform active:scale-95 text-lg">
+                        Hesap Oluştur
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
