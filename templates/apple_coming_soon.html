@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <!-- Visual Composition -->
+        <div class="mb-6 relative inline-block animate-bounce" style="animation-duration: 2s;">
+            <span class="text-8xl">🍏</span>
+            <span class="absolute -bottom-2 -right-4 text-5xl">💤</span>
+        </div>
+
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900 mt-4 mb-2">
+            Bu adım henüz aktif değil 🛠️🍏
+        </h2>
+        <p class="text-slate-500 mb-8">Apple ile giriş entegrasyonu yapım aşamasında.</p>
+
+        <div class="glass-panel py-8 px-4 sm:px-10 rounded-2xl">
+            <p class="text-md font-medium text-slate-700 mb-8" id="countdown-text">
+                Geri tuşuna basılmazsa giriş sayfasına yönlendiriliyorsun... (⏳ 10)
+            </p>
+
+            <a href="/login" id="back-button"
+                class="inline-flex w-full justify-center items-center gap-2 rounded-xl border border-transparent bg-slate-900 py-3 px-4 text-lg font-medium text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-all transform active:scale-95">
+                <i class="fa-solid fa-arrow-left"></i>
+                Geri Git
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timeLeft = 10;
+    const countdownElement = document.getElementById('countdown-text');
+
+    // Yönlendirme ve sayacı güncelleyen fonksiyon
+    const interval = setInterval(() => {
+        timeLeft--;
+        countdownElement.innerText = `Geri tuşuna basılmazsa giriş sayfasına yönlendiriliyorsun... (⏳ ${timeLeft})`;
+
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            window.location.href = '/login';
+        }
+    }, 1000);
+</script>
+{% endblock %}

@@ -139,6 +139,10 @@ async def register(
 async def login_page(request: Request, registered: str = None):
     return templates.TemplateResponse("login.html", {"request": request, "registered": registered})
 
+@router.get("/apple-soon", response_class=HTMLResponse)
+async def apple_soon_page(request: Request):
+    return templates.TemplateResponse("apple_coming_soon.html", {"request": request})
+
 @router.post("/login")
 async def login(
     response: Response,
