@@ -59,11 +59,45 @@
                     </div>
                 </div>
 
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember_me" type="checkbox"
+                            class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                        <label for="remember_me" class="ml-2 block text-sm text-slate-900">
+                            Beni Hatırla
+                        </label>
+                    </div>
+                </div>
+
                 <div>
                     <button type="submit"
                         class="flex w-full justify-center rounded-xl border border-transparent bg-blue-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform active:scale-95 text-lg">
                         Giriş Yap
                     </button>
+                </div>
+
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-slate-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="bg-white px-2 text-slate-500">veya</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-col gap-3">
+                        <a href="/auth/google/login"
+                            class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                            <i class="fa-brands fa-google text-red-500 text-lg"></i>
+                            Google ile Devam Et
+                        </a>
+                        <a href="/auth/apple/login"
+                            class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-colors">
+                            <i class="fa-brands fa-apple text-lg"></i>
+                            Apple ile Devam Et
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

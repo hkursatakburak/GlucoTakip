@@ -163,6 +163,27 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
+                    annotation: {
+                        annotations: {
+                            targetRange: {
+                                type: 'box',
+                                yMin: 70,
+                                yMax: 140,
+                                backgroundColor: 'rgba(74, 222, 128, 0.15)', // green-400 with opacity
+                                borderColor: 'rgba(74, 222, 128, 0.3)',
+                                borderWidth: 1,
+                                drawTime: 'beforeDatasetsDraw',
+                                label: {
+                                    display: true,
+                                    content: 'İdeal Aralık',
+                                    position: 'start',
+                                    color: 'rgba(74, 222, 128, 0.8)',
+                                    font: { family: "'Inter', sans-serif", size: 10, weight: 'normal' },
+                                    backgroundColor: 'transparent'
+                                }
+                            }
+                        }
+                    },
                     tooltip: {
                         backgroundColor: '#1e293b',
                         padding: 12,

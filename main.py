@@ -1,12 +1,20 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
+import os
+from dotenv import load_dotenv
 import models, database
 from routers import auth, measurements, reports
+
+load_dotenv()
 
 # Create DB tables
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(title="GlucoTakip", description="Şeker Takip Uygulaması")
+
+# SessionMiddleware is required for Authlib OAuth
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY", "super-secret-default-key"))
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")

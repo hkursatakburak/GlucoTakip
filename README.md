@@ -1,56 +1,77 @@
-# 🩸 GlucoTakip - Akıllı Şeker Asistanı 🩺
+# 🩸 GlucoTakip - Akıllı Şeker Asistanı
 
-![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/tailwind_css-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+Babalarımızın ve değerli diyabet hastalarının kan şekeri ölçümlerini bir kağıda yazıp kaybetme derdine son! GlucoTakip, sağlık verilerini kolayca ve güvenle takip etmenizi sağlayan, doktor randevularında tek tıkla profesyonel bir Excel raporu sunabilen modern ve kullanıcı dostu bir zeki web uygulamasıdır. Sağlığınız parmaklarınızın ucunda, kayıt altında ve güvende! 🚀
 
-🤖 **Modern Web teknolojileriyle (FastAPI & Tailwind) geliştirilen, diyabet hastalarının (özellikle babalarımızın 🧔) günlük şeker takibini kolaylaştıran dijital asistan.**
+## ✨ Öne Çıkan Özellikler
 
-Karmaşık sağlık uygulamalarından sıkılanlar için çok temiz, sade ve **mobil öncelikli** tasarlandı. Büyük butonlar, okunabilir metinler ve anlaşılır grafikler içerir. 📱💙
+- **Işık Hızında Backend:** FastAPI altyapısıyla desteklenen, anlık veri işleyen süper hızlı mimari.
+- **Tek Tıkla Güvenli Giriş (OAuth2):** Şifre ezberlemeye son! Google veya Apple hesabınızla güvenle ve hızlıca sisteme girin.
+- **Modern ve Ferah Tasarım:** TailwindCSS kullanılarak geliştirilen, mobilde ve masaüstünde harika görünen cam gibi (glassmorphism) arayüz.
+- **Görsel Trend Analizi:** Chart.js entegrasyonu sayesinde haftalık ve aylık şeker değişimlerinizi "İdeal Aralık" hedef bantlarıyla görsel olarak takip edin.
+- **Doktor İçin Excel Raporu:** Girilen verilerinizi tek tıkla filtreleyin ve doktorunuza sunmak üzere derli toplu `.xlsx` (Excel) dosyası olarak anında indirin.
+- **Simülasyon ve Data Seeding:** Yeni özellikler denerken sistemi verilerle doldurmak için tasarlanmış gerçekçi otomatik test simülasyonu betiği!
+
+---
+
+## 📸 Örnek Kullanım (Demo)
+
+*Not: Bu bölüme uygulamanın çalışır halini gösteren GIF'ler eklenecektir.*
+
+### 1. Tek Tıkla Giriş Yapma
+Kullanıcıların şifre hatırlamakla uğraşmadan Google veya Apple hesaplarıyla sisteme saniyeler içinde giriş yaptığı o akıcı deneyim.
+`![Google ile Giriş](docs/login.gif)`
+
+### 2. Ölçüm Ekleme ve Grafikler
+Yeni bir kan şekeri değerinin girilmesi ve ana sayfadaki grafiğin anında güncellenmesi.
+`![Ölçüm Ekleme](docs/dashboard.gif)`
+
+### 3. Doktor İçin Excel Raporu Alma
+Girilen verilerin tek bir butona basılarak düzenli bir Excel tablosu olarak indirilmesi.
+`![Excel İndir](docs/export.gif)`
 
 ---
 
 ## 🗺️ Yol Haritası (Roadmap)
 
-- [x] 🏗️ Proje İskeletinin Kurulması ve Dosya Yapısı (Tamamlandı)
-- [ ] 💾 Veritabanı Modelleri ve Bağlantısı
-- [ ] 🔐 Kullanıcı Kayıt & Giriş (Auth) Sistemi
-- [ ] 📝 Ölçüm Ekleme ve Listeleme Ekranları
-- [ ] 📈 Grafiksel Raporlama (Chart.js)
-- [ ] 📑 Excel Çıktısı Alma (Doktor Sunumu İçin)
-- [ ] 🐳 Docker ile Paketleme ve Deploy
+- [x] Proje İskeletinin Kurulması (FastAPI & SQLite)
+- [x] Kullanıcı Kayıt & Giriş (Auth) Sistemi
+- [x] Google / Apple SSO Entegrasyonu
+- [x] Ölçüm Ekleme, Listeleme ve Grafik Ekranları
+- [x] Excel Çıktısı Alma (Export Endpoint)
+- [x] Otomatik Test Simülasyonu Yazılması
+- [ ] Docker ile Paketleme ve Deploy
+- [ ] Kullanıcı Sözleşmesi ve Veri İzni (AI Çalışmaları İçin)
 
 ---
 
-## 🚀 Kurulum ve Çalıştırma
+## 🛠️ Kurulum ve Çalıştırma
 
-Projeyi bilgisayarınızda çalıştırmak için aşağıdaki adımları izleyin:
+Projeyi lokal bilgisayarınızda çalıştırmak oldukça basittir:
 
-### 1. Dosyaları Kopyalayın ve Dizine Gidin
-```bash
-git clone <sizin-repo-linkiniz>
-cd GlucoTakip
-```
+1. **Gereksinimleri Yükleyin:**  
+   Terminalinizde projenin ana dizinindeyken bağımlılıkları yükleyin:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 2. Sanal Ortam (Virtual Environment) Oluşturun
-```bash
-python -m venv venv
-```
-* **Windows için aktifleştirme:** `.\venv\Scripts\activate`
-* **Mac/Linux için aktifleştirme:** `source venv/bin/activate`
+2. **Çevre Değişkenlerini (Environment Variables) Ayarlayın:**  
+   Projenin kök dizinindeki `.env.example` dosyasının adını `.env` olarak değiştirin ve içeriğini kendi credentials bilgilerinizle doldurun (örn. Google Client ID vb. _Bu adımı Google Cloud Console üzerinden kendi projelerinizde ID aldıktan sonra gerçekleştireceksiniz_).
 
-### 3. Gerekli Kütüphaneleri Yükleyin
-```bash
-pip install -r requirements.txt
-```
+3. **Sunucuyu Başlatın:**  
+   Uvicorn ile FastAPI sunucusunu ayağa kaldırın:
+   ```bash
+   uvicorn main:app --reload
+   ```
+   Artık tarayıcınızdan `http://127.0.0.1:8000` adresine giderek uygulamayı kullanabilirsiniz!
 
-### 4. Uygulamayı Başlatın
-```bash
-uvicorn main:app --reload
-```
-Tarayıcınızda [http://127.0.0.1:8000](http://127.0.0.1:8000) adresine giderek asistanınızı kullanmaya başlayabilirsiniz! 🎉
+4. **Otomatik Test Simülasyonunu Çalıştırma:**  
+   Sistemin tüm süreçlerini (Kayıt, giriş, veri ekleme, Excel indirme) simüle etmek çok kolay. Sadece terminalden şu betiği çalıştırın:
+   ```bash
+   python simulate_user_flow.py
+   ```
 
 ---
-
-<br><br>
-<sub>*Bu proje Vibe Coding konseptiyle, Antigravity ve Gemini desteğiyle geliştirilmektedir.*</sub>
+<p align="center">
+  <br>
+  <i><small>Bu proje Vibe Coding konseptiyle geliştirilmektedir.</small></i>
+</p>

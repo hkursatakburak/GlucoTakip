@@ -23,6 +23,21 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
+def get_or_create_oauth_user(db: Session, email: str, full_name: str):
+    user = get_user_by_email(db, email)
+    if not user:
+        user = models.User(
+            email=email,
+            full_name=full_name,
+            hashed_password=None,
+            data_consent=True
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    return user
+
+
 def get_measurements(db: Session, user_id: str, limit: int = 100):
     return db.query(models.Measurement).filter(models.Measurement.user_id == user_id).order_by(models.Measurement.measured_at.desc()).limit(limit).all()
 

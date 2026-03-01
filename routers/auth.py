@@ -4,9 +4,33 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import timedelta
 import crud, schemas, database, auth
+import os
+from authlib.integrations.starlette_client import OAuth
 
 router = APIRouter(tags=["Authentication"])
 templates = Jinja2Templates(directory="templates")
+
+oauth = OAuth()
+
+oauth.register(
+    name='google',
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
+)
+
+oauth.register(
+    name='apple',
+    server_metadata_url='https://appleid.apple.com/.well-known/openid-configuration',
+    client_id=os.getenv("APPLE_CLIENT_ID"),
+    client_secret=os.getenv("APPLE_PRIVATE_KEY"),
+    client_kwargs={
+        'scope': 'name email'
+    }
+)
 
 def get_current_user_from_cookie(request: Request, db: Session = Depends(database.get_db)):
     token = request.cookies.get("access_token")
@@ -23,6 +47,61 @@ def get_current_user_from_cookie(request: Request, db: Session = Depends(databas
         return None
     user = crud.get_user_by_email(db, email=email)
     return user
+
+@router.get("/auth/{provider}/login")
+async def oauth_login(provider: str, request: Request):
+    if provider == "google":
+        redirect_uri = request.url_for("auth_callback", provider="google")
+        return await oauth.google.authorize_redirect(request, str(redirect_uri))
+    elif provider == "apple":
+        redirect_uri = request.url_for("auth_callback", provider="apple")
+        return await oauth.apple.authorize_redirect(request, str(redirect_uri))
+    return RedirectResponse(url="/login")
+
+@router.get("/auth/{provider}/callback")
+async def auth_callback(provider: str, request: Request, db: Session = Depends(database.get_db)):
+    try:
+        if provider == "google":
+            token = await oauth.google.authorize_access_token(request)
+            user_info = token.get("userinfo")
+            if not user_info:
+                return RedirectResponse(url="/login?error=Google+login+failed")
+            email = user_info.get("email")
+            full_name = user_info.get("name", "Google Kullanıcısı")
+            
+        elif provider == "apple":
+            token = await oauth.apple.authorize_access_token(request)
+            user_info = token.get("userinfo")
+            if not user_info:
+                return RedirectResponse(url="/login?error=Apple+login+failed")
+            email = user_info.get("email")
+            full_name = user_info.get("name", "Apple Kullanıcısı")
+        else:
+            return RedirectResponse(url="/login")
+
+        if not email:
+            return RedirectResponse(url="/login?error=Email+not+provided+by+identity+provider")
+
+        # Get or create user implicitly handling oauth flow
+        user = crud.get_or_create_oauth_user(db, email=email, full_name=full_name)
+
+        # For SSO logins, automatically apply "Remember Me" (e.g. 30 days)
+        access_token_expires = timedelta(days=30)
+        access_token = auth.create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
+
+        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {access_token}",
+            httponly=True,
+            max_age=30 * 24 * 60 * 60,
+            expires=30 * 24 * 60 * 60,
+        )
+        return response
+    except Exception as e:
+        return RedirectResponse(url=f"/login?error=SSO+Error")
 
 @router.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request):
@@ -63,6 +142,7 @@ async def login(
     request: Request,
     email: str = Form(...),
     password: str = Form(...),
+    remember_me: str = Form(None),
     db: Session = Depends(database.get_db)
 ):
     user = crud.get_user_by_email(db, email=email)
@@ -72,19 +152,33 @@ async def login(
             "error": "Geçersiz e-posta veya şifre"
         })
     
-    access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
+    if remember_me == "on":
+        # Keep user logged in for 30 days
+        expiry_days = 30
+        access_token_expires = timedelta(days=expiry_days)
+        max_age = expiry_days * 24 * 60 * 60
+    else:
+        # Session cookie, or very short-lived
+        access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
+        max_age = None # Browser will delete when closed
+
     access_token = auth.create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
     
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-    response.set_cookie(
-        key="access_token",
-        value=f"Bearer {access_token}",
-        httponly=True,
-        max_age=auth.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        expires=auth.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-    )
+    
+    cookie_kwargs = {
+        "key": "access_token",
+        "value": f"Bearer {access_token}",
+        "httponly": True,
+    }
+    
+    if max_age is not None:
+        cookie_kwargs["max_age"] = max_age
+        cookie_kwargs["expires"] = max_age
+
+    response.set_cookie(**cookie_kwargs)
     return response
 
 @router.get("/logout")

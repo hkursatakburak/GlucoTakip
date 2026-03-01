@@ -55,13 +55,13 @@
 
                 <div class="flex items-start mt-4">
                     <div class="flex h-5 items-center">
-                        <input id="data_consent" name="data_consent" type="checkbox" value="true"
+                        <input id="data_consent" name="data_consent" type="checkbox" value="true" required
                             class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                     </div>
                     <div class="ml-3 text-sm">
                         <label for="data_consent" class="font-medium text-slate-700">Bilimsel İzin</label>
                         <p class="text-slate-500 text-xs mt-1">Verilerimin anonim olarak bilimsel çalışmalarda
-                            kullanılmasına izin veriyorum. (İsteğe bağlı)</p>
+                            kullanılmasına izin veriyorum.</p>
                     </div>
                 </div>
 
@@ -70,6 +70,30 @@
                         class="flex w-full justify-center rounded-xl border border-transparent bg-blue-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform active:scale-95 text-lg">
                         Hesap Oluştur
                     </button>
+                </div>
+
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-slate-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="bg-white px-2 text-slate-500">veya</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-col gap-3">
+                        <a href="/auth/google/login"
+                            class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                            <i class="fa-brands fa-google text-red-500 text-lg"></i>
+                            Google ile Devam Et
+                        </a>
+                        <a href="/auth/apple/login"
+                            class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-colors">
+                            <i class="fa-brands fa-apple text-lg"></i>
+                            Apple ile Devam Et
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
