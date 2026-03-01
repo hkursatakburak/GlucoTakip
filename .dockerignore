@@ -1,0 +1,27 @@
+# Python/Pip
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.venv
+*.venv/
+pip-log.txt
+
+# Databases and Temp
+*.db
+*.sqlite3
+diabetes_tracker.db
+temp/
+*.xlsx
+*.csv
+
+# Git
+.git
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

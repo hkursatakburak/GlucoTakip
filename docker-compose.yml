@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    # Dokcerfile'ın bulunduğu dizini gösterir (geçerli dizin)
+    build: .
+    
+    # Konteyner içindeki 8000 portunu makinemizdeki 8000 portuna bağlar
+    ports:
+      - "8000:8000"
+    
+    # Çevre değişkenlerini bu dosyadan okumasını söyleriz
+    env_file:
+      - .env
+    
+    # Veritabanı ve temp klasörü verilerinin konteyner silinse bile kalıcı olmasını sağlar (Opsiyonel ama önerilir)
+    volumes:
+      - ./diabetes_tracker.db:/app/diabetes_tracker.db
+      - ./temp:/app/temp

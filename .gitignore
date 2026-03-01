@@ -5,6 +5,8 @@ __pycache__/
 venv/
 env/
 .env
+.env.*
+*.json
 .venv
 *.venv/
 pip-log.txt

@@ -3,10 +3,13 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
+
+# load_dotenv() MUST be called before importing routers
+# because routers/auth.py uses os.getenv at import time!
+load_dotenv()
+
 import models, database
 from routers import auth, measurements, reports
-
-load_dotenv()
 
 # Create DB tables
 models.Base.metadata.create_all(bind=database.engine)

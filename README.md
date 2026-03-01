@@ -39,7 +39,7 @@ Girilen verilerin tek bir butona basılarak düzenli bir Excel tablosu olarak in
 - [x] Ölçüm Ekleme, Listeleme ve Grafik Ekranları
 - [x] Excel Çıktısı Alma (Export Endpoint)
 - [x] Otomatik Test Simülasyonu Yazılması
-- [ ] Docker ile Paketleme ve Deploy
+- [x] Docker ile Paketleme ve Deploy
 - [ ] Kullanıcı Sözleşmesi ve Veri İzni (AI Çalışmaları İçin)
 
 ---
@@ -57,14 +57,21 @@ Projeyi lokal bilgisayarınızda çalıştırmak oldukça basittir:
 2. **Çevre Değişkenlerini (Environment Variables) Ayarlayın:**  
    Projenin kök dizinindeki `.env.example` dosyasının adını `.env` olarak değiştirin ve içeriğini kendi credentials bilgilerinizle doldurun (örn. Google Client ID vb. _Bu adımı Google Cloud Console üzerinden kendi projelerinizde ID aldıktan sonra gerçekleştireceksiniz_).
 
-3. **Sunucuyu Başlatın:**  
+3. **Sunucuyu Başlatın (Lokal Yöntem - Geliştirme İçin):**  
    Uvicorn ile FastAPI sunucusunu ayağa kaldırın:
    ```bash
    uvicorn main:app --reload
    ```
    Artık tarayıcınızdan `http://127.0.0.1:8000` adresine giderek uygulamayı kullanabilirsiniz!
 
-4. **Otomatik Test Simülasyonunu Çalıştırma:**  
+4. **Docker ile Çalıştırma (Üretim/Deploy Yöntemi):**  
+   Sisteminizde Docker ve Docker Compose kurulu ise, tüm uygulamayı tek satırla izole bir ortamda ayağa kaldırabilirsiniz:
+   ```bash
+   docker-compose up -d --build
+   ```
+   Bu komut projeyi derler ve arka planda çalıştırır. Uygulamaya yine `http://127.0.0.1:8000` üzerinden erişebilirsiniz. Konteynerleri durdurmak için `docker-compose down` kullanabilirsiniz.
+
+5. **Otomatik Test Simülasyonunu Çalıştırma:**  
    Sistemin tüm süreçlerini (Kayıt, giriş, veri ekleme, Excel indirme) simüle etmek çok kolay. Sadece terminalden şu betiği çalıştırın:
    ```bash
    python simulate_user_flow.py

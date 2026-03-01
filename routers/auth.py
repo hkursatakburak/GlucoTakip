@@ -51,11 +51,13 @@ def get_current_user_from_cookie(request: Request, db: Session = Depends(databas
 @router.get("/auth/{provider}/login")
 async def oauth_login(provider: str, request: Request):
     if provider == "google":
-        redirect_uri = request.url_for("auth_callback", provider="google")
-        return await oauth.google.authorize_redirect(request, str(redirect_uri))
+        redirect_uri = os.getenv("REDIRECT_URI")
+        if not redirect_uri:
+            redirect_uri = str(request.url_for("auth_callback", provider="google"))
+        return await oauth.google.authorize_redirect(request, redirect_uri)
     elif provider == "apple":
-        redirect_uri = request.url_for("auth_callback", provider="apple")
-        return await oauth.apple.authorize_redirect(request, str(redirect_uri))
+        redirect_uri = str(request.url_for("auth_callback", provider="apple"))
+        return await oauth.apple.authorize_redirect(request, redirect_uri)
     return RedirectResponse(url="/login")
 
 @router.get("/auth/{provider}/callback")
@@ -101,6 +103,7 @@ async def auth_callback(provider: str, request: Request, db: Session = Depends(d
         )
         return response
     except Exception as e:
+        print(f"SSO ERROR: {e}") # ADDED FOR DEBUGGING
         return RedirectResponse(url=f"/login?error=SSO+Error")
 
 @router.get("/register", response_class=HTMLResponse)
