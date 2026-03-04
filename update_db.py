@@ -31,10 +31,11 @@ def apply_migration():
             
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS data_consent BOOLEAN DEFAULT FALSE;"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE;"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;"))
             
             # Değişiklikleri kaydet
             conn.commit()
-            print("✅ BAŞARILI: 'data_consent' ve 'is_verified' sütunları 'users' tablosuna başarıyla eklendi!")
+            print("✅ BAŞARILI: 'data_consent', 'is_verified' ve 'is_admin' sütunları 'users' tablosuna başarıyla eklendi!")
             print("Artık Render üzerindeki sisteminiz sorunsuz çalışacaktır.")
     except Exception as e:
         print(f"❌ HATA OLUŞTU: Sütunlar eklenirken bir sorun yaşandı.\nDetay: {e}")

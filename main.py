@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import models, database
-from routers import auth, measurements, reports
+from routers import auth, measurements, reports, admin
 
 # Create DB tables
 models.Base.metadata.create_all(bind=database.engine)
@@ -26,6 +26,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(auth.router)
 app.include_router(measurements.router)
 app.include_router(reports.router)
+app.include_router(admin.router)
 
 # .well-known klasörünü dışarı açıyoruz
 os.makedirs(".well-known", exist_ok=True)

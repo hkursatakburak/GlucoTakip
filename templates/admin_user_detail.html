@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ target_user.full_name }} — Admin Detail</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-brand {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all .2s;
+        }
+
+        .nav-links a:hover {
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 36px 24px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            display: flex;
+            gap: 28px;
+            align-items: flex-start;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-info h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .profile-info .email {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .meta-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .tag-green {
+            background: rgba(34, 197, 94, .15);
+            color: var(--green);
+        }
+
+        .tag-muted {
+            background: rgba(148, 163, 184, .15);
+            color: var(--muted);
+        }
+
+        .tag-admin {
+            background: rgba(139, 92, 246, .2);
+            color: var(--purple);
+        }
+
+        .profile-uid {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: monospace;
+            margin-top: 10px;
+        }
+
+        /* Password Change Panel */
+        .pwd-panel {
+            background: rgba(239, 68, 68, .06);
+            border: 1px solid rgba(239, 68, 68, .2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .pwd-panel h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--red);
+        }
+
+        .pwd-form {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .field label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .field input {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: var(--red);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 11px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, var(--red), #dc2626);
+            color: #fff;
+        }
+
+        .btn-blue {
+            background: rgba(59, 130, 246, .2);
+            color: var(--blue);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: .9;
+        }
+
+        /* Success message */
+        .msg-success {
+            background: rgba(34, 197, 94, .1);
+            border: 1px solid rgba(34, 197, 94, .2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--green);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Measurements Table */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .count-badge {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .table-wrap {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .val-high {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .val-low {
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .val-normal {
+            color: var(--green);
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <span class="nav-brand">💧 GlucoTakip</span>
+        <span class="badge-admin">⚡ GOD MODE</span>
+        <div class="nav-links">
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/users">← Kullanıcılar</a>
+            <a href="/logout">Çıkış</a>
+        </div>
+    </nav>
+
+    <main>
+        {% if request.query_params.get('msg') %}
+        <div class="msg-success">✅ {{ request.query_params.get('msg') }}</div>
+        {% endif %}
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="avatar">{{ (target_user.full_name or 'U')[0].upper() }}</div>
+            <div class="profile-info">
+                <h2>{{ target_user.full_name or 'İsimsiz' }}</h2>
+                <div class="email">{{ target_user.email }}</div>
+                <div class="meta-row">
+                    {% if target_user.is_verified %}
+                    <span class="tag tag-green">✅ Doğrulandı</span>
+                    {% else %}
+                    <span class="tag tag-muted">⏳ Doğrulanmadı</span>
+                    {% endif %}
+                    {% if target_user.is_admin %}
+                    <span class="tag tag-admin">⚡ Admin</span>
+                    {% endif %}
+                    {% if target_user.data_consent %}
+                    <span class="tag tag-green">📋 Veri Onayı Verildi</span>
+                    {% endif %}
+                </div>
+                <div class="profile-uid">UID: {{ target_user.id }}</div>
+                <div class="profile-uid">Kayıt: {{ target_user.created_at.strftime('%d.%m.%Y %H:%M') if
+                    target_user.created_at else '—' }}</div>
+            </div>
+        </div>
+
+        <!-- Password Change -->
+        <div class="pwd-panel">
+            <h3>🔑 Şifre Zorla Değiştir</h3>
+            <form class="pwd-form" method="post" action="/admin/users/{{ target_user.id }}/set-password">
+                <div class="field">
+                    <label>Yeni Şifre</label>
+                    <input type="password" name="new_password" placeholder="En az 6 karakter" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-red">🔄 Şifreyi Güncelle</button>
+            </form>
+        </div>
+
+        <!-- Measurements -->
+        <div class="section-header">
+            <span class="section-title">📊 Kan Şekeri Ölçümleri</span>
+            <span class="count-badge">{{ measurements|length }} kayıt</span>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Değer (mg/dL)</th>
+                        <th>Kategori</th>
+                        <th>Tarih & Saat</th>
+                        <th>Not</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in measurements %}
+                    <tr>
+                        <td style="color:var(--muted);font-size:12px;">{{ loop.index }}</td>
+                        <td>
+                            {% if m.value < 70 %} <span class="val-low">{{ m.value }} ↓</span>
+                                {% elif m.value > 180 %}
+                                <span class="val-high">{{ m.value }} ↑</span>
+                                {% else %}
+                                <span class="val-normal">{{ m.value }}</span>
+                                {% endif %}
+                        </td>
+                        <td>{{ m.category }}</td>
+                        <td style="color:var(--muted);">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') if m.measured_at
+                            else '—' }}</td>
+                        <td style="color:var(--muted);font-size:13px;">{{ m.notes or '—' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">Bu kullanıcının
+                            ölçümü yok.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+
+</html>

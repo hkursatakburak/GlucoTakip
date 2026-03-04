@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Yönetimi — GlucoTakip Admin</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-brand {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all .2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 24px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        /* Search */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            width: 260px;
+            outline: none;
+        }
+
+        .search-bar input::placeholder {
+            color: var(--muted);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--blue);
+        }
+
+        /* Table */
+        .table-wrap {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 13px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tag-green {
+            background: rgba(34, 197, 94, .15);
+            color: var(--green);
+        }
+
+        .tag-muted {
+            background: rgba(148, 163, 184, .15);
+            color: var(--muted);
+        }
+
+        .tag-admin {
+            background: rgba(139, 92, 246, .2);
+            color: var(--purple);
+        }
+
+        /* Action buttons */
+        .action-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-blue {
+            background: rgba(59, 130, 246, .2);
+            color: var(--blue);
+        }
+
+        .btn-purple {
+            background: rgba(139, 92, 246, .2);
+            color: var(--purple);
+        }
+
+        .btn-red {
+            background: rgba(239, 68, 68, .15);
+            color: var(--red);
+        }
+
+        .btn:hover {
+            opacity: .8;
+            transform: translateY(-1px);
+        }
+
+        .confirm-del {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <span class="nav-brand">💧 GlucoTakip</span>
+        <span class="badge-admin">⚡ GOD MODE</span>
+        <div class="nav-links">
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/users" class="active">Kullanıcılar</a>
+            <a href="/">Ana Sayfa</a>
+            <a href="/logout">Çıkış</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>👥 Kullanıcı Yönetimi</h1>
+                <p style="color:var(--muted);font-size:14px;margin-top:4px;">Toplam {{ users|length }} kullanıcı</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 İsim veya e-posta ara..." oninput="filterTable()">
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Durum</th>
+                        <th>Rol</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr class="user-row">
+                        <td><strong>{{ u.full_name or '—' }}</strong></td>
+                        <td style="color:var(--muted);">{{ u.email }}</td>
+                        <td>
+                            {% if u.is_verified %}
+                            <span class="tag tag-green">✅ Doğrulandı</span>
+                            {% else %}
+                            <span class="tag tag-muted">⏳ Bekliyor</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.is_admin %}
+                            <span class="tag tag-admin">⚡ Admin</span>
+                            {% else %}
+                            <span class="tag tag-muted">Kullanıcı</span>
+                            {% endif %}
+                        </td>
+                        <td style="color:var(--muted);font-size:13px;">
+                            {{ u.created_at.strftime('%d.%m.%Y') if u.created_at else '—' }}
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <a class="btn btn-blue" href="/admin/users/{{ u.id }}">🔍 Detay</a>
+                                <form method="post" action="/admin/users/{{ u.id }}/toggle-admin"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn btn-purple">
+                                        {% if u.is_admin %}👤 Admin'i Al{% else %}⚡ Admin Yap{% endif %}
+                                    </button>
+                                </form>
+                                <form method="post" action="/admin/users/{{ u.id }}/delete" style="display:inline;"
+                                    onsubmit="return confirm('{{ u.full_name }} kullanıcısını ve tüm verilerini silmek istediğinizden emin misiniz?')">
+                                    <button type="submit" class="btn btn-red">🗑 Sil</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">Henüz kullanıcı yok.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function filterTable() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.user-row').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

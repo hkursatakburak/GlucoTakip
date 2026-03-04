@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 import models, schemas
 from auth import get_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def get_user(db: Session, user_id: str):
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -63,3 +63,91 @@ def get_measurements_by_date_range(db: Session, user_id: str, start_date: dateti
             models.Measurement.measured_at <= end_date
         )
     ).order_by(models.Measurement.measured_at.asc()).all()
+
+
+# ── Admin CRUD ────────────────────────────────────────────────────────────────
+
+def get_dashboard_stats(db: Session) -> dict:
+    from sqlalchemy import func
+    cutoff = datetime.utcnow() - timedelta(hours=24)
+    total_users       = db.query(func.count(models.User.id)).scalar()
+    verified_users    = db.query(func.count(models.User.id)).filter(models.User.is_verified == True).scalar()
+    total_measurements = db.query(func.count(models.Measurement.id)).scalar()
+    last_24h          = db.query(func.count(models.Measurement.id)).filter(
+        models.Measurement.measured_at >= cutoff
+    ).scalar()
+    recent = (
+        db.query(models.Measurement)
+        .order_by(models.Measurement.measured_at.desc())
+        .limit(10)
+        .all()
+    )
+    return {
+        "total_users": total_users,
+        "verified_users": verified_users,
+        "total_measurements": total_measurements,
+        "last_24h_measurements": last_24h,
+        "recent_measurements": recent,
+    }
+
+
+def get_all_users(db: Session):
+    return db.query(models.User).order_by(models.User.created_at.desc()).all()
+
+
+def get_user_with_measurements(db: Session, user_id: str):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return None, []
+    measurements = (
+        db.query(models.Measurement)
+        .filter(models.Measurement.user_id == user_id)
+        .order_by(models.Measurement.measured_at.desc())
+        .all()
+    )
+    return user, measurements
+
+
+def admin_force_set_password(db: Session, user_id: str, new_password: str) -> bool:
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return False
+    user.hashed_password = get_password_hash(new_password)
+    db.commit()
+    return True
+
+
+def admin_toggle_admin(db: Session, user_id: str) -> models.User | None:
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return None
+    user.is_admin = not user.is_admin
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def admin_delete_user(db: Session, user_id: str) -> bool:
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        return False
+    db.query(models.Measurement).filter(models.Measurement.user_id == user_id).delete()
+    db.delete(user)
+    db.commit()
+    return True
+
+
+def get_all_measurements_anonymous(db: Session):
+    """Tüm ölçümleri kişisel veri olmadan döndürür (AI dataset export)."""
+    return (
+        db.query(
+            models.Measurement.id,
+            models.Measurement.user_id,
+            models.Measurement.value,
+            models.Measurement.category,
+            models.Measurement.measured_at,
+            models.Measurement.notes,
+        )
+        .order_by(models.Measurement.measured_at.asc())
+        .all()
+    )

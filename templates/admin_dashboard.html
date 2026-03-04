@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — GlucoTakip</title>
+  <style>
+    :root {
+      --bg: #0f1117; --card: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.1); --text: #e2e8f0;
+      --muted: #94a3b8; --blue: #3b82f6; --purple: #8b5cf6;
+      --green: #22c55e; --amber: #f59e0b; --red: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+
+    /* Nav */
+    nav { background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+          padding: 14px 32px; display: flex; align-items: center; gap: 24px; }
+    .nav-brand { font-size: 18px; font-weight: 800;
+                 background: linear-gradient(135deg, var(--blue), var(--purple));
+                 -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; gap: 8px; margin-left: auto; }
+    .nav-links a { color: var(--muted); text-decoration: none; padding: 7px 14px;
+                   border-radius: 8px; font-size: 14px; transition: all .2s; }
+    .nav-links a:hover, .nav-links a.active { background: var(--card); color: var(--text); }
+    .badge-admin { background: linear-gradient(135deg,var(--blue),var(--purple));
+                   color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 20px;
+                   font-weight: 700; margin-left: 4px; }
+
+    /* Main */
+    main { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 36px; }
+
+    /* Stat Cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+                  gap: 18px; margin-bottom: 40px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+                 padding: 24px; position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0;
+                         height: 3px; border-radius: 16px 16px 0 0; }
+    .stat-card.blue::before  { background: linear-gradient(90deg,var(--blue),var(--purple)); }
+    .stat-card.green::before { background: linear-gradient(90deg,var(--green),#16a34a); }
+    .stat-card.amber::before { background: linear-gradient(90deg,var(--amber),#d97706); }
+    .stat-card.red::before   { background: linear-gradient(90deg,var(--red),#dc2626); }
+    .stat-icon { font-size: 32px; margin-bottom: 12px; }
+    .stat-label { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .stat-value { font-size: 36px; font-weight: 800; }
+
+    /* Export Buttons */
+    .export-bar { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+           border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none;
+           border: none; cursor: pointer; transition: all .2s; }
+    .btn-blue   { background: linear-gradient(135deg,var(--blue),var(--purple)); color: #fff; }
+    .btn-green  { background: linear-gradient(135deg,var(--green),#16a34a); color: #fff; }
+    .btn-amber  { background: linear-gradient(135deg,var(--amber),#d97706); color: #fff; }
+    .btn:hover  { transform: translateY(-1px); opacity: .9; }
+
+    /* Table */
+    .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+    .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: rgba(255,255,255,0.03); padding: 12px 16px; text-align: left;
+         font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase;
+         letter-spacing: .5px; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .tag-blue  { background: rgba(59,130,246,.2); color: var(--blue); }
+    .tag-green { background: rgba(34,197,94,.2); color: var(--green); }
+    .tag-amber { background: rgba(245,158,11,.2); color: var(--amber); }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="nav-brand">💧 GlucoTakip</span>
+    <span class="badge-admin">⚡ GOD MODE</span>
+    <div class="nav-links">
+      <a href="/admin" class="active">Dashboard</a>
+      <a href="/admin/users">Kullanıcılar</a>
+      <a href="/">Ana Sayfa</a>
+      <a href="/logout">Çıkış</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Admin Kokpiti</h1>
+    <p class="subtitle">Hoş geldin, {{ admin.full_name }} — sistem genel durumu</p>
+
+    <!-- Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Toplam Kullanıcı</div>
+        <div class="stat-value">{{ total_users }}</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Doğrulanmış</div>
+        <div class="stat-value">{{ verified_users }}</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Toplam Ölçüm</div>
+        <div class="stat-value">{{ total_measurements }}</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-label">Son 24 Saat</div>
+        <div class="stat-value">{{ last_24h_measurements }}</div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="export-bar">
+      <span style="color:var(--muted);font-size:14px;align-self:center;">🤖 AI Dataset Export:</span>
+      <a class="btn btn-green" href="/admin/export/excel">📥 Excel İndir</a>
+      <a class="btn btn-blue" href="/admin/export/csv">📄 CSV İndir</a>
+      <a class="btn btn-amber" href="/admin/users">👤 Kullanıcıları Yönet</a>
+    </div>
+
+    <!-- Recent Measurements -->
+    <div class="section-title">Son 10 Ölçüm</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Değer (mg/dL)</th>
+            <th>Kategori</th>
+            <th>Tarih</th>
+            <th>Kullanıcı ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in recent_measurements %}
+          <tr>
+            <td><strong>{{ m.value }}</strong></td>
+            <td>
+              {% if m.value < 70 %}
+                <span class="tag tag-blue">{{ m.category }}</span>
+              {% elif m.value > 180 %}
+                <span class="tag tag-amber">{{ m.category }}</span>
+              {% else %}
+                <span class="tag tag-green">{{ m.category }}</span>
+              {% endif %}
+            </td>
+            <td>{{ m.measured_at.strftime('%d.%m.%Y %H:%M') if m.measured_at else '—' }}</td>
+            <td style="color:var(--muted);font-size:12px;font-family:monospace;">{{ m.user_id[:12] }}...</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px;">Henüz ölçüm yok.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
