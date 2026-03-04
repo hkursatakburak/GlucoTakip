@@ -1,84 +1,84 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import os
 import traceback
+import requests
 
-SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+# ── Brevo API ─────────────────────────────────────────────────────────────────
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+FROM_EMAIL    = os.getenv("FROM_EMAIL", "noreply@glucotakip.com")
+FROM_NAME     = os.getenv("FROM_NAME", "GlucoTakip")
+
+# ── Eski SMTP ayarları (kullanılmıyor, tanımlı bırakıldı) ─────────────────────
+SMTP_SERVER   = os.getenv("SMTP_SERVER",   "smtp.gmail.com")
+SMTP_PORT     = int(os.getenv("SMTP_PORT", 587))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-# If FROM_EMAIL is not set, fallback to SMTP_USERNAME
-FROM_EMAIL = os.getenv("FROM_EMAIL", SMTP_USERNAME)
 
-# ── Simulation Mode ──────────────────────────────────────────────────────────
-# Render ücretsiz planda outbound SMTP portları bloke edilebilir.
-# SIMULATE_EMAIL=true ayarlanırsa gerçek bağlantı kurulmaz, sadece log yazılır.
+# ── Simülasyon Modu ───────────────────────────────────────────────────────────
+# SIMULATE_EMAIL=true → gerçek istek atılmaz, sadece log yazılır.
 SIMULATE_EMAIL = os.getenv("SIMULATE_EMAIL", "false").lower() == "true"
 
+BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email"
+
+
 def send_email(to_email: str, subject: str, html_content: str):
-    print(f"--- EMAIL DELIVERY TRACE START ---")
-    print(f"To: {to_email}")
-    print(f"Subject: {subject}")
-    print(f"SMTP Server: {SMTP_SERVER}:{SMTP_PORT}")
-    print(f"SMTP Username Configured: {'Yes' if SMTP_USERNAME else 'No'}")
-    print(f"SMTP Password Configured: {'Yes' if SMTP_PASSWORD else 'No'}")
+    print("--- EMAIL DELIVERY TRACE START ---")
+    print(f"To             : {to_email}")
+    print(f"Subject        : {subject}")
+    print(f"From           : {FROM_NAME} <{FROM_EMAIL}>")
+    print(f"Provider       : Brevo HTTP API v3")
+    print(f"API Key Set    : {'Yes' if BREVO_API_KEY else 'No'}")
     print(f"Simulation Mode: {'ACTIVE' if SIMULATE_EMAIL else 'OFF'}")
 
-    # ── Simülasyon Modu ──────────────────────────────────────────────────────
+    # ── Simülasyon Modu ───────────────────────────────────────────────────────
     if SIMULATE_EMAIL:
         print(f"🟡 [SIMULATION MODE] Gerçek e-posta gönderilmedi. Alıcı: {to_email}")
-        print(f"[SIMULATION MODE] Konu: {subject}")
-        print(f"[SIMULATION MODE] İçerik (HTML):\n{html_content}")
-        print(f"--- EMAIL DELIVERY TRACE END (SIMULATED) ---")
+        print(f"[SIMULATION MODE] Konu   : {subject}")
+        print(f"[SIMULATION MODE] İçerik :\n{html_content}")
+        print("--- EMAIL DELIVERY TRACE END (SIMULATED) ---")
         return
 
-    if not SMTP_USERNAME or not SMTP_PASSWORD:
-        print(f"Warning: SMTP credentials not set. Simulated email to {to_email}")
-        print(f"Content:\n{html_content}")
-        print(f"--- EMAIL DELIVERY TRACE END (SIMULATED - NO CREDENTIALS) ---")
+    if not BREVO_API_KEY:
+        print("❌ BREVO_API_KEY tanımlı değil. E-posta gönderilemedi.")
+        print("--- EMAIL DELIVERY TRACE END (NO API KEY) ---")
         return
 
-    msg = MIMEMultipart("alternative")
-    msg.add_header("Subject", subject)
-    msg.add_header("From", str(FROM_EMAIL))
-    msg.add_header("To", to_email)
+    # ── Brevo API isteği ──────────────────────────────────────────────────────
+    headers = {
+        "accept":       "application/json",
+        "content-type": "application/json",
+        "api-key":      BREVO_API_KEY,
+    }
 
-    part = MIMEText(html_content, "html")
-    msg.attach(part)
+    payload = {
+        "sender":     {"name": FROM_NAME, "email": FROM_EMAIL},
+        "to":         [{"email": to_email}],
+        "subject":    subject,
+        "htmlContent": html_content,
+    }
 
     try:
-        print(f"1. Connecting to SMTP Server (port {SMTP_PORT}, timeout=30s)...")
-        server = smtplib.SMTP(str(SMTP_SERVER), int(SMTP_PORT), timeout=30)
-        server.set_debuglevel(1)  # Gmail diyaloğunun her satırını Render loglarına yazar
+        print("1. Brevo API'ye HTTP POST isteği gönderiliyor...")
+        response = requests.post(BREVO_ENDPOINT, headers=headers, json=payload, timeout=15)
 
-        print("2. Starting TLS (STARTTLS)...")
-        server.starttls()
+        print(f"2. HTTP Status : {response.status_code}")
+        print(f"   Response    : {response.text}")
 
-        print("3. Attempting Login...")
-        server.login(str(SMTP_USERNAME), str(SMTP_PASSWORD))
+        if response.status_code in (200, 201):
+            print(f"✅ Success: E-posta başarıyla gönderildi → {to_email}")
+            print("--- EMAIL DELIVERY TRACE END ---")
+        else:
+            print(f"❌ Brevo API Hatası: {response.status_code} - {response.text}")
+            print("--- EMAIL DELIVERY TRACE END WITH ERROR ---")
 
-        print("4. Sending Email...")
-        server.sendmail(str(FROM_EMAIL), to_email, msg.as_string())
-
-        print("5. Closing Connection...")
-        server.quit()
-
-        print(f"✅ Success: Email securely delivered to {to_email}")
-        print(f"--- EMAIL DELIVERY TRACE END ---")
-    except smtplib.SMTPAuthenticationError as e:
-        print(f"❌ SMTP Authentication Error: Kullanıcı adı veya şifre hatalı. ({type(e).__name__}: {e})")
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection Error: Brevo API'ye ulaşılamadı. ({type(e).__name__}: {e})")
         traceback.print_exc()
-        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
-    except smtplib.SMTPConnectError as e:
-        print(f"❌ SMTP Connection Error: Sunucuya bağlanılamadı ({SMTP_SERVER}:{SMTP_PORT}). ({type(e).__name__}: {e})")
+        print("--- EMAIL DELIVERY TRACE END WITH ERROR ---")
+    except requests.exceptions.Timeout as e:
+        print(f"❌ Timeout: İstek 15 saniye içinde yanıt almadı. ({type(e).__name__}: {e})")
         traceback.print_exc()
-        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
-    except OSError as e:
-        print(f"❌ Network/OS Error: Ağ erişimi engellenmiş olabilir veya port kapalı. ({type(e).__name__} [Errno {e.errno}]: {e.strerror})")
-        traceback.print_exc()
-        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
+        print("--- EMAIL DELIVERY TRACE END WITH ERROR ---")
     except Exception as e:
-        print(f"❌ Unexpected Error sending email to {to_email}: ({type(e).__name__}: {e})")
+        print(f"❌ Unexpected Error: ({type(e).__name__}: {e})")
         traceback.print_exc()
-        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
+        print("--- EMAIL DELIVERY TRACE END WITH ERROR ---")
