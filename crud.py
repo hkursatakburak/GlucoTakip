@@ -16,7 +16,8 @@ def create_user(db: Session, user: schemas.UserCreate):
         email=user.email,
         full_name=user.full_name,
         hashed_password=hashed_password,
-        data_consent=user.data_consent
+        data_consent=user.data_consent,
+        is_verified=False
     )
     db.add(db_user)
     db.commit()
@@ -30,7 +31,8 @@ def get_or_create_oauth_user(db: Session, email: str, full_name: str):
             email=email,
             full_name=full_name,
             hashed_password=None,
-            data_consent=True
+            data_consent=True,
+            is_verified=True
         )
         db.add(user)
         db.commit()

@@ -27,6 +27,9 @@ app.include_router(auth.router)
 app.include_router(measurements.router)
 app.include_router(reports.router)
 
+# .well-known klasörünü dışarı açıyoruz
+app.mount("/.well-known", StaticFiles(directory=".well-known"), name="well-known")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)

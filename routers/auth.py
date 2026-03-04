@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Form, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Form, Response, BackgroundTasks
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -6,6 +6,7 @@ from datetime import timedelta
 import crud, schemas, database, auth
 import os
 from authlib.integrations.starlette_client import OAuth
+from email_utils import send_email
 
 router = APIRouter(tags=["Authentication"])
 templates = Jinja2Templates(directory="templates")
@@ -113,6 +114,7 @@ async def register_page(request: Request):
 @router.post("/register")
 async def register(
     request: Request,
+    background_tasks: BackgroundTasks,
     email: str = Form(...),
     full_name: str = Form(...),
     password: str = Form(...),
@@ -132,12 +134,36 @@ async def register(
         data_consent=data_consent
     )
     crud.create_user(db=db, user=user_schema)
+    
+    token = auth.create_email_token(email=email, token_type="verify_email")
+    verify_url = str(request.url_for("verify_email")) + f"?token={token}"
+    email_body = f"""
+    <h3>GlucoTakip'e Hoş Geldiniz!</h3>
+    <p>Hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın:</p>
+    <p><a href="{verify_url}">Hesabımı Doğrula</a></p>
+    """
+    background_tasks.add_task(send_email, email, "GlucoTakip Hesabınızı Doğrulayın", email_body)
+    
     return RedirectResponse(url="/login?registered=true", status_code=status.HTTP_302_FOUND)
+
+@router.get("/auth/verify-email", name="verify_email")
+async def verify_email(request: Request, token: str, db: Session = Depends(database.get_db)):
+    email = auth.verify_email_token(token, "verify_email")
+    if not email:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Geçersiz veya süresi dolmuş doğrulama bağlantısı."})
+    
+    user = crud.get_user_by_email(db, email=email)
+    if not user:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Kullanıcı bulunamadı."})
+    
+    user.is_verified = True
+    db.commit()
+    return RedirectResponse(url="/login?verified=true", status_code=status.HTTP_302_FOUND)
 
 
 @router.get("/login", response_class=HTMLResponse)
-async def login_page(request: Request, registered: str = None):
-    return templates.TemplateResponse("login.html", {"request": request, "registered": registered})
+async def login_page(request: Request, registered: str = None, verified: str = None):
+    return templates.TemplateResponse("login.html", {"request": request, "registered": registered, "verified": verified})
 
 @router.get("/apple-soon", response_class=HTMLResponse)
 async def apple_soon_page(request: Request):
@@ -157,6 +183,12 @@ async def login(
         return templates.TemplateResponse("login.html", {
             "request": request,
             "error": "Geçersiz e-posta veya şifre"
+        })
+        
+    if not getattr(user, "is_verified", True):
+        return templates.TemplateResponse("login.html", {
+            "request": request,
+            "error": "Lütfen giriş yapmadan önce e-posta adresinizi doğrulayın."
         })
     
     if remember_me == "on":
@@ -187,6 +219,85 @@ async def login(
 
     response.set_cookie(**cookie_kwargs)
     return response
+
+@router.get("/auth/forgot-password", response_class=HTMLResponse)
+async def forgot_password_page(request: Request):
+    return templates.TemplateResponse("forgot_password.html", {"request": request})
+
+@router.post("/auth/forgot-password")
+async def forgot_password(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    email: str = Form(...),
+    db: Session = Depends(database.get_db)
+):
+    user = crud.get_user_by_email(db, email=email)
+    if user:
+        token = auth.create_email_token(email=email, token_type="reset_password")
+        reset_url = str(request.url_for("reset_password_page")) + f"?token={token}"
+        email_body = f"""
+        <h3>Şifre Sıfırlama</h3>
+        <p>Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:</p>
+        <p><a href="{reset_url}">Şifremi Sıfırla</a></p>
+        """
+        background_tasks.add_task(send_email, email, "GlucoTakip Şifre Sıfırlama", email_body)
+    
+    return templates.TemplateResponse("message_page.html", {
+        "request": request, 
+        "title": "Şifre Sıfırlama Bağlantısı Gönderildi",
+        "message": "Eğer sistemimizde bu e-posta adresiyle kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı e-posta adresinize gönderilmiştir."
+    })
+
+@router.get("/auth/reset-password", response_class=HTMLResponse, name="reset_password_page")
+async def reset_password_page(request: Request, token: str):
+    email = auth.verify_email_token(token, "reset_password")
+    if not email:
+        return templates.TemplateResponse("message_page.html", {
+            "request": request,
+            "title": "Geçersiz Bağlantı",
+            "message": "Şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş."
+        })
+    return templates.TemplateResponse("reset_password.html", {"request": request, "token": token})
+
+@router.post("/auth/reset-password")
+async def reset_password(
+    request: Request,
+    token: str = Form(...),
+    password: str = Form(...),
+    password_confirm: str = Form(...),
+    db: Session = Depends(database.get_db)
+):
+    email = auth.verify_email_token(token, "reset_password")
+    if not email:
+        return templates.TemplateResponse("message_page.html", {
+            "request": request,
+            "title": "Geçersiz Bağlantı",
+            "message": "Şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş."
+        })
+    
+    if password != password_confirm:
+        return templates.TemplateResponse("reset_password.html", {
+            "request": request, 
+            "token": token,
+            "error": "Şifreler eşleşmiyor."
+        })
+        
+    user = crud.get_user_by_email(db, email=email)
+    if not user:
+        return templates.TemplateResponse("message_page.html", {
+            "request": request,
+            "title": "Hata",
+            "message": "Kullanıcı bulunamadı."
+        })
+        
+    user.hashed_password = auth.get_password_hash(password)
+    db.commit()
+    
+    return templates.TemplateResponse("message_page.html", {
+        "request": request,
+        "title": "Şifre Sıfırlandı",
+        "message": "Şifreniz başarıyla güncellendi. Artık yeni şifrenizle giriş yapabilirsiniz."
+    })
 
 @router.get("/logout")
 async def logout(response: Response):

@@ -19,6 +19,7 @@ class User(Base):
     hashed_password = Column(String)
     full_name = Column(String)
     data_consent = Column(Boolean, default=False)
+    is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     measurements = relationship("Measurement", back_populates="owner")

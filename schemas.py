@@ -9,6 +9,7 @@ class UserBase(BaseModel):
     email: EmailStr
     full_name: str
     data_consent: bool = False
+    is_verified: bool = False
 
 class UserCreate(UserBase):
     password: str
@@ -23,12 +24,11 @@ class UserResponse(UserBase):
 # Measurement Schemas
 class MeasurementBase(BaseModel):
     value: int
-    measured_at: Optional[datetime] = None
     category: MeasurementCategory
     notes: Optional[str] = None
 
 class MeasurementCreate(MeasurementBase):
-    pass
+    measured_at: Optional[datetime] = None
 
 class MeasurementResponse(MeasurementBase):
     id: int
