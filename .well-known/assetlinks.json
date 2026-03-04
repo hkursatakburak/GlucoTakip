@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.glucotakip.app",
+        "sha256_cert_fingerprints": ["89:A4:B5:9D:58:29:30:EE:69:59:5F:E7:48:36:B9:5D:C8:6F:A9:AA:97:04:65:91:08:B7:21:F4:35:18:19:FB"]
+      }
+    }]

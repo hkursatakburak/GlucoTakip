@@ -25,3 +25,6 @@ temp/
 .vscode/
 .idea/
 .DS_Store
+
+!/.well-known/
+!/.well-known/assetlinks.json

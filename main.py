@@ -28,6 +28,7 @@ app.include_router(measurements.router)
 app.include_router(reports.router)
 
 # .well-known klasörünü dışarı açıyoruz
+os.makedirs(".well-known", exist_ok=True)
 app.mount("/.well-known", StaticFiles(directory=".well-known"), name="well-known")
 
 if __name__ == "__main__":

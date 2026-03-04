@@ -38,3 +38,7 @@ logs/
 htmlcov/
 .coverage
 .tox/
+
+# Allow .well-known folder and assetlinks.json
+!/.well-known/
+!/.well-known/assetlinks.json
