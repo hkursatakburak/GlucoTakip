@@ -5,11 +5,16 @@ import os
 import traceback
 
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 465))
+SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 # If FROM_EMAIL is not set, fallback to SMTP_USERNAME
 FROM_EMAIL = os.getenv("FROM_EMAIL", SMTP_USERNAME)
+
+# ── Simulation Mode ──────────────────────────────────────────────────────────
+# Render ücretsiz planda outbound SMTP portları bloke edilebilir.
+# SIMULATE_EMAIL=true ayarlanırsa gerçek bağlantı kurulmaz, sadece log yazılır.
+SIMULATE_EMAIL = os.getenv("SIMULATE_EMAIL", "false").lower() == "true"
 
 def send_email(to_email: str, subject: str, html_content: str):
     print(f"--- EMAIL DELIVERY TRACE START ---")
@@ -18,11 +23,20 @@ def send_email(to_email: str, subject: str, html_content: str):
     print(f"SMTP Server: {SMTP_SERVER}:{SMTP_PORT}")
     print(f"SMTP Username Configured: {'Yes' if SMTP_USERNAME else 'No'}")
     print(f"SMTP Password Configured: {'Yes' if SMTP_PASSWORD else 'No'}")
-    
+    print(f"Simulation Mode: {'ACTIVE' if SIMULATE_EMAIL else 'OFF'}")
+
+    # ── Simülasyon Modu ──────────────────────────────────────────────────────
+    if SIMULATE_EMAIL:
+        print(f"🟡 [SIMULATION MODE] Gerçek e-posta gönderilmedi. Alıcı: {to_email}")
+        print(f"[SIMULATION MODE] Konu: {subject}")
+        print(f"[SIMULATION MODE] İçerik (HTML):\n{html_content}")
+        print(f"--- EMAIL DELIVERY TRACE END (SIMULATED) ---")
+        return
+
     if not SMTP_USERNAME or not SMTP_PASSWORD:
         print(f"Warning: SMTP credentials not set. Simulated email to {to_email}")
         print(f"Content:\n{html_content}")
-        print(f"--- EMAIL DELIVERY TRACE END (SIMULATED) ---")
+        print(f"--- EMAIL DELIVERY TRACE END (SIMULATED - NO CREDENTIALS) ---")
         return
 
     msg = MIMEMultipart("alternative")
@@ -34,20 +48,22 @@ def send_email(to_email: str, subject: str, html_content: str):
     msg.attach(part)
 
     try:
-        print(f"1. Connecting to SMTP Server via SSL (port {SMTP_PORT})...")
-        # SMTP_SSL doğrudan şifreli bağlantı kurar; starttls() gerekmez
-        server = smtplib.SMTP_SSL(str(SMTP_SERVER), int(SMTP_PORT))
-        server.set_debuglevel(1)  # Debug logs for troubleshooting
-        
-        print("2. Attempting Login...")
+        print(f"1. Connecting to SMTP Server (port {SMTP_PORT}, timeout=30s)...")
+        server = smtplib.SMTP(str(SMTP_SERVER), int(SMTP_PORT), timeout=30)
+        server.set_debuglevel(1)  # Gmail diyaloğunun her satırını Render loglarına yazar
+
+        print("2. Starting TLS (STARTTLS)...")
+        server.starttls()
+
+        print("3. Attempting Login...")
         server.login(str(SMTP_USERNAME), str(SMTP_PASSWORD))
-        
-        print("3. Sending Email...")
+
+        print("4. Sending Email...")
         server.sendmail(str(FROM_EMAIL), to_email, msg.as_string())
-        
-        print("4. Closing Connection...")
+
+        print("5. Closing Connection...")
         server.quit()
-        
+
         print(f"✅ Success: Email securely delivered to {to_email}")
         print(f"--- EMAIL DELIVERY TRACE END ---")
     except smtplib.SMTPAuthenticationError as e:
