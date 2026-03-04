@@ -5,7 +5,7 @@ import os
 import traceback
 
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+SMTP_PORT = int(os.getenv("SMTP_PORT", 465))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 # If FROM_EMAIL is not set, fallback to SMTP_USERNAME
@@ -34,25 +34,35 @@ def send_email(to_email: str, subject: str, html_content: str):
     msg.attach(part)
 
     try:
-        print("1. Connecting to SMTP Server...")
-        server = smtplib.SMTP(str(SMTP_SERVER), int(SMTP_PORT))
+        print(f"1. Connecting to SMTP Server via SSL (port {SMTP_PORT})...")
+        # SMTP_SSL doğrudan şifreli bağlantı kurar; starttls() gerekmez
+        server = smtplib.SMTP_SSL(str(SMTP_SERVER), int(SMTP_PORT))
         server.set_debuglevel(1)  # Debug logs for troubleshooting
         
-        print("2. Starting TLS...")
-        server.starttls()
-        
-        print("3. Attempting Login...")
+        print("2. Attempting Login...")
         server.login(str(SMTP_USERNAME), str(SMTP_PASSWORD))
         
-        print("4. Sending Email...")
+        print("3. Sending Email...")
         server.sendmail(str(FROM_EMAIL), to_email, msg.as_string())
         
-        print("5. Closing Connection...")
+        print("4. Closing Connection...")
         server.quit()
         
         print(f"✅ Success: Email securely delivered to {to_email}")
         print(f"--- EMAIL DELIVERY TRACE END ---")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"❌ SMTP Authentication Error: Kullanıcı adı veya şifre hatalı. ({type(e).__name__}: {e})")
+        traceback.print_exc()
+        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
+    except smtplib.SMTPConnectError as e:
+        print(f"❌ SMTP Connection Error: Sunucuya bağlanılamadı ({SMTP_SERVER}:{SMTP_PORT}). ({type(e).__name__}: {e})")
+        traceback.print_exc()
+        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
+    except OSError as e:
+        print(f"❌ Network/OS Error: Ağ erişimi engellenmiş olabilir veya port kapalı. ({type(e).__name__} [Errno {e.errno}]: {e.strerror})")
+        traceback.print_exc()
+        print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
     except Exception as e:
-        print(f"❌ Failed to send email to {to_email}: {e}")
+        print(f"❌ Unexpected Error sending email to {to_email}: ({type(e).__name__}: {e})")
         traceback.print_exc()
         print(f"--- EMAIL DELIVERY TRACE END WITH ERROR ---")
