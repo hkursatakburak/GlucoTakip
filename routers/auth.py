@@ -232,20 +232,39 @@ async def forgot_password(
     db: Session = Depends(database.get_db)
 ):
     user = crud.get_user_by_email(db, email=email)
-    if user:
-        token = auth.create_email_token(email=email, token_type="reset_password")
-        reset_url = str(request.url_for("reset_password_page")) + f"?token={token}"
-        email_body = f"""
-        <h3>Şifre Sıfırlama</h3>
-        <p>Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:</p>
-        <p><a href="{reset_url}">Şifremi Sıfırla</a></p>
-        """
-        background_tasks.add_task(send_email, email, "GlucoTakip Şifre Sıfırlama", email_body)
+    if not user:
+        return templates.TemplateResponse("forgot_password.html", {
+            "request": request,
+            "error": "Bu e-posta adresi sistemimizde kayıtlı değil. Lütfen kontrol edip tekrar deneyin."
+        })
     
+    token = auth.create_email_token(email=email, token_type="reset_password")
+    reset_url = str(request.url_for("reset_password_page")) + f"?token={token}"
+    email_body = f"""
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+        <h2 style="color: #4A90E2; text-align: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;">Şifre Sıfırlama Talebi</h2>
+        <p>Merhaba <strong>{user.full_name or 'Değerli Kullanıcımız'}</strong>,</p>
+        <p>GlucoTakip hesabınız için bir şifre sıfırlama talebinde bulundunuz. Şifrenizi yenilemek için aşağıdaki butona tıklayabilirsiniz:</p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{reset_url}" style="background-color: #4A90E2; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block;">Şifremi Sıfırla</a>
+        </div>
+        <p style="font-size: 14px; color: #666;">Eğer butona tıklayamıyorsanız, aşağıdaki bağlantıyı kopyalayıp tarayıcınızın adres çubuğuna yapıştırabilirsiniz:</p>
+        <p style="font-size: 12px; word-break: break-all; color: #4A90E2;">{reset_url}</p>
+        <p style="font-size: 14px; background-color: #f9f9f9; padding: 10px; border-radius: 4px; border-left: 4px solid #f39c12; margin-top: 30px;">
+            <strong>Bilgi:</strong> Eğer bu talebi siz yapmadıysanız, bu e-postayı güvenle görmezden gelebilirsiniz; şifreniz değişmeyecektir ve hesabınız güvendedir.
+        </p>
+        <br>
+        <p style="text-align: center; font-size: 14px; color: #888; border-top: 1px solid #e0e0e0; padding-top: 20px;">
+            Sağlıklı günler dileriz,<br><strong>GlucoTakip Ekibi</strong>
+        </p>
+    </div>
+    """
+    background_tasks.add_task(send_email, email, "GlucoTakip Şifre Sıfırlama", email_body)
+
     return templates.TemplateResponse("message_page.html", {
         "request": request, 
         "title": "Şifre Sıfırlama Bağlantısı Gönderildi",
-        "message": "Eğer sistemimizde bu e-posta adresiyle kayıtlı bir hesap varsa, şifre sıfırlama bağlantısı e-posta adresinize gönderilmiştir."
+        "message": "Şifre sıfırlama bağlantısı e-posta adresinize gönderilmiştir."
     })
 
 @router.get("/auth/reset-password", response_class=HTMLResponse, name="reset_password_page")
