@@ -6,7 +6,7 @@ from datetime import timedelta
 import crud, schemas, database, auth
 import os
 from authlib.integrations.starlette_client import OAuth
-from email_utils import send_email
+from email_utils import send_email, build_verification_email, build_password_reset_email
 
 router = APIRouter(tags=["Authentication"])
 templates = Jinja2Templates(directory="templates")
@@ -137,11 +137,7 @@ async def register(
     
     token = auth.create_email_token(email=email, token_type="verify_email")
     verify_url = str(request.url_for("verify_email")) + f"?token={token}"
-    email_body = f"""
-    <h3>GlucoTakip'e Hoş Geldiniz!</h3>
-    <p>Hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın:</p>
-    <p><a href="{verify_url}">Hesabımı Doğrula</a></p>
-    """
+    email_body = build_verification_email(full_name=full_name, verify_url=verify_url)
     background_tasks.add_task(send_email, email, "GlucoTakip Hesabınızı Doğrulayın", email_body)
     
     return RedirectResponse(url="/login?registered=true", status_code=status.HTTP_302_FOUND)
@@ -240,25 +236,7 @@ async def forgot_password(
     
     token = auth.create_email_token(email=email, token_type="reset_password")
     reset_url = str(request.url_for("reset_password_page")) + f"?token={token}"
-    email_body = f"""
-    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
-        <h2 style="color: #4A90E2; text-align: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;">Şifre Sıfırlama Talebi</h2>
-        <p>Merhaba <strong>{user.full_name or 'Değerli Kullanıcımız'}</strong>,</p>
-        <p>GlucoTakip hesabınız için bir şifre sıfırlama talebinde bulundunuz. Şifrenizi yenilemek için aşağıdaki butona tıklayabilirsiniz:</p>
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{reset_url}" style="background-color: #4A90E2; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block;">Şifremi Sıfırla</a>
-        </div>
-        <p style="font-size: 14px; color: #666;">Eğer butona tıklayamıyorsanız, aşağıdaki bağlantıyı kopyalayıp tarayıcınızın adres çubuğuna yapıştırabilirsiniz:</p>
-        <p style="font-size: 12px; word-break: break-all; color: #4A90E2;">{reset_url}</p>
-        <p style="font-size: 14px; background-color: #f9f9f9; padding: 10px; border-radius: 4px; border-left: 4px solid #f39c12; margin-top: 30px;">
-            <strong>Bilgi:</strong> Eğer bu talebi siz yapmadıysanız, bu e-postayı güvenle görmezden gelebilirsiniz; şifreniz değişmeyecektir ve hesabınız güvendedir.
-        </p>
-        <br>
-        <p style="text-align: center; font-size: 14px; color: #888; border-top: 1px solid #e0e0e0; padding-top: 20px;">
-            Sağlıklı günler dileriz,<br><strong>GlucoTakip Ekibi</strong>
-        </p>
-    </div>
-    """
+    email_body = build_password_reset_email(full_name=user.full_name, reset_url=reset_url)
     background_tasks.add_task(send_email, email, "GlucoTakip Şifre Sıfırlama", email_body)
 
     return templates.TemplateResponse("message_page.html", {
