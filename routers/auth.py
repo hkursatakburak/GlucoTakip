@@ -233,7 +233,21 @@ async def forgot_password(
             "request": request,
             "error": "Bu e-posta adresi sistemimizde kayıtlı değil. Lütfen kontrol edip tekrar deneyin."
         })
-    
+
+    # ── Doğrulanmamış hesap kontrolü ──────────────────────────────────────────
+    if not getattr(user, "is_verified", True):
+        # Şifre sıfırlama GÖNDERILMEZ; yeni aktivasyon maili fırlatılır
+        verify_token = auth.create_email_token(email=email, token_type="verify_email")
+        verify_url = str(request.url_for("verify_email")) + f"?token={verify_token}"
+        activation_body = build_verification_email(full_name=user.full_name, verify_url=verify_url)
+        background_tasks.add_task(
+            send_email, email, "GlucoTakip Hesabınızı Doğrulayın", activation_body
+        )
+        return templates.TemplateResponse("forgot_password.html", {
+            "request": request,
+            "warning": "Mail adresiniz onaylanmadı. Aktivasyon maili tekrar gönderildi."
+        })
+
     token = auth.create_email_token(email=email, token_type="reset_password")
     reset_url = str(request.url_for("reset_password_page")) + f"?token={token}"
     email_body = build_password_reset_email(full_name=user.full_name, reset_url=reset_url)
