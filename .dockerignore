@@ -28,3 +28,7 @@ temp/
 
 !/.well-known/
 !/.well-known/assetlinks.json
+
+# Documentation
+docs/
+README.md

@@ -1,33 +1,60 @@
-# 🩸 GlucoTakip - Akıllı Şeker Asistanı
+<div align="center">
+  <img src="docs/Gliko_Takip_Logo.png" alt="GlucoTakip Logo" width="180">
+  
+  # 🩸 GlucoTakip - Akıllı Şeker Asistanı
+  
+  **Sağlığın Cebinde, Kontrol Sende!** 🚀
+  
+  <p>
+    <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white" alt="FastAPI" />
+    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />
+  </p>
+</div>
 
-Babalarımızın ve değerli diyabet hastalarının kan şekeri ölçümlerini bir kağıda yazıp kaybetme derdine son! GlucoTakip, sağlık verilerini kolayca ve güvenle takip etmenizi sağlayan, doktor randevularında tek tıkla profesyonel bir Excel raporu sunabilen modern ve kullanıcı dostu bir zeki web uygulamasıdır. Sağlığınız parmaklarınızın ucunda, kayıt altında ve güvende! 🚀
+![GlucoTakip Promo Afişi](docs/gluco-takip-promo.png)
 
-## ✨ Öne Çıkan Özellikler
-
-- **Işık Hızında Backend:** FastAPI altyapısıyla desteklenen, anlık veri işleyen süper hızlı mimari.
-- **Tek Tıkla Güvenli Giriş (OAuth2):** Şifre ezberlemeye son! Google veya Apple hesabınızla güvenle ve hızlıca sisteme girin.
-- **Modern ve Ferah Tasarım:** TailwindCSS kullanılarak geliştirilen, mobilde ve masaüstünde harika görünen cam gibi (glassmorphism) arayüz.
-- **Görsel Trend Analizi:** Chart.js entegrasyonu sayesinde haftalık ve aylık şeker değişimlerinizi "İdeal Aralık" hedef bantlarıyla görsel olarak takip edin.
-- **Doktor İçin Excel Raporu:** Girilen verilerinizi tek tıkla filtreleyin ve doktorunuza sunmak üzere derli toplu `.xlsx` (Excel) dosyası olarak anında indirin.
-- **Simülasyon ve Data Seeding:** Yeni özellikler denerken sistemi verilerle doldurmak için tasarlanmış gerçekçi otomatik test simülasyonu betiği!
+Babalarımızın ve değerli diyabet hastalarının kan şekeri ölçümlerini bir kağıda yazıp kaybetme derdine son! **GlucoTakip**, sağlık verilerini kolayca ve güvenle takip etmenizi sağlayan, doktor randevularında tek tıkla profesyonel bir Excel raporu sunabilen modern ve kullanıcı dostu bir akıllı web uygulamasıdır. Sağlığınız parmaklarınızın ucunda, kayıt altında ve güvende! 🛡️
 
 ---
 
-## 📸 Örnek Kullanım (Demo)
+## ✨ Öne Çıkan Özellikler
 
-*Not: Bu bölüme uygulamanın çalışır halini gösteren GIF'ler eklenecektir.*
+- ⚡ **Işık Hızında Backend:** FastAPI altyapısıyla desteklenen, anlık veri işleyen süper hızlı mimari.
+- 🔐 **Tek Tıkla Güvenli Giriş (OAuth2):** Şifre ezberlemeye son! Google veya Apple hesabınızla güvenle ve hızlıca sisteme girin.
+- 🎨 **Modern ve Ferah Tasarım:** TailwindCSS kullanılarak geliştirilen, mobilde ve masaüstünde harika görünen cam gibi (glassmorphism) arayüz.
+- 📈 **Görsel Trend Analizi:** Chart.js entegrasyonu sayesinde haftalık ve aylık şeker değişimlerinizi "İdeal Aralık" hedef bantlarıyla görsel olarak takip edin.
+- 📑 **Doktor İçin Excel Raporu:** Girilen verilerinizi tek tıkla filtreleyin ve doktorunuza sunmak üzere derli toplu `.xlsx` (Excel) dosyası olarak anında indirin.
+- 🤖 **Simülasyon ve Data Seeding:** Yeni özellikler denerken sistemi verilerle doldurmak için tasarlanmış gerçekçi otomatik test simülasyonu betiği!
 
-### 1. Tek Tıkla Giriş Yapma
+---
+
+## 📸 Uygulama İçi Görseller (Demo)
+
+### 1. Güvenli ve Hızlı Giriş 🚪
 Kullanıcıların şifre hatırlamakla uğraşmadan Google veya Apple hesaplarıyla sisteme saniyeler içinde giriş yaptığı o akıcı deneyim.
-`![Google ile Giriş](docs/login.gif)`
+<div align="center">
+  <img src="docs/login_page.png" alt="Giriş Ekranı" width="400">
+</div>
 
-### 2. Ölçüm Ekleme ve Grafikler
-Yeni bir kan şekeri değerinin girilmesi ve ana sayfadaki grafiğin anında güncellenmesi.
-`![Ölçüm Ekleme](docs/dashboard.gif)`
+### 2. Özet ve Veri Grafiği 📊
+Geçmiş ölçümlerinizin haftalık veya aylık periyotlarda, ideal aralıklarla birlikte görselleştirilmiş hali.
+<div align="center">
+  <img src="docs/data_graph.png" alt="Veri Grafiği" width="800">
+</div>
 
-### 3. Doktor İçin Excel Raporu Alma
-Girilen verilerin tek bir butona basılarak düzenli bir Excel tablosu olarak indirilmesi.
-`![Excel İndir](docs/export.gif)`
+### 3. Yeni Ölçüm Ekleme 🩸
+Saniyeler içinde yeni bir açlık/tokluk kan şekeri değeri girebileceğiniz modern form ekranı.
+<div align="center">
+  <img src="docs/add_data.png" alt="Veri Ekleme Ekranı" width="400">
+</div>
+
+### 4. Geçmiş Kayıtlar ve Excel Çıktısı 📥
+Tüm ölçüm geçmişinize göz atın ve doktorunuz için tek tıkla Excel formatında indirin.
+<div align="center">
+  <img src="docs/last_data.png" alt="Son Veriler ve İndirme" width="800">
+</div>
 
 ---
 
@@ -48,37 +75,6 @@ Girilen verilerin tek bir butona basılarak düzenli bir Excel tablosu olarak in
 
 Projeyi lokal bilgisayarınızda çalıştırmak oldukça basittir:
 
-1. **Gereksinimleri Yükleyin:**  
-   Terminalinizde projenin ana dizinindeyken bağımlılıkları yükleyin:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Çevre Değişkenlerini (Environment Variables) Ayarlayın:**  
-   Projenin kök dizinindeki `.env.example` dosyasının adını `.env` olarak değiştirin ve içeriğini kendi credentials bilgilerinizle doldurun (örn. Google Client ID vb. _Bu adımı Google Cloud Console üzerinden kendi projelerinizde ID aldıktan sonra gerçekleştireceksiniz_).
-
-3. **Sunucuyu Başlatın (Lokal Yöntem - Geliştirme İçin):**  
-   Uvicorn ile FastAPI sunucusunu ayağa kaldırın:
-   ```bash
-   uvicorn main:app --reload
-   ```
-   Artık tarayıcınızdan `http://127.0.0.1:8000` adresine giderek uygulamayı kullanabilirsiniz!
-
-4. **Docker ile Çalıştırma (Üretim/Deploy Yöntemi):**  
-   Sisteminizde Docker ve Docker Compose kurulu ise, tüm uygulamayı tek satırla izole bir ortamda ayağa kaldırabilirsiniz:
-   ```bash
-   docker-compose up -d --build
-   ```
-   Bu komut projeyi derler ve arka planda çalıştırır. Uygulamaya yine `http://127.0.0.1:8000` üzerinden erişebilirsiniz. Konteynerleri durdurmak için `docker-compose down` kullanabilirsiniz.
-
-5. **Otomatik Test Simülasyonunu Çalıştırma:**  
-   Sistemin tüm süreçlerini (Kayıt, giriş, veri ekleme, Excel indirme) simüle etmek çok kolay. Sadece terminalden şu betiği çalıştırın:
-   ```bash
-   python simulate_user_flow.py
-   ```
-
----
-<p align="center">
-  <br>
-  <i><small>Bu proje Vibe Coding konseptiyle geliştirilmektedir.</small></i>
-</p>
+**1. Gereksinimleri Yükleyin:** Terminalinizde projenin ana dizinindeyken bağımlılıkları yükleyin:
+```bash
+pip install -r requirements.txt

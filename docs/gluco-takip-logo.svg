@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1b2d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2e4a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Drop emblem gradient -->
+    <linearGradient id="dropGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4aa;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#00b4d8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0096c7;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Drop inner glow -->
+    <radialGradient id="dropGlow" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#7fffd4;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#00b4d8;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Pulse ring gradient -->
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4aa;stop-opacity:0" />
+      <stop offset="30%" style="stop-color:#00d4aa;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#00d4aa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00d4aa;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Shield gradient -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4aa;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#00b4d8;stop-opacity:0.05" />
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Soft drop shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#00d4aa" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Clip path for rounded square -->
+    <clipPath id="roundedClip">
+      <rect width="512" height="512" rx="96" ry="96"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" ry="96" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid texture -->
+  <g opacity="0.04">
+    <line x1="0" y1="64" x2="512" y2="64" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="0" y1="128" x2="512" y2="128" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="0" y1="192" x2="512" y2="192" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="0" y1="256" x2="512" y2="256" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="0" y1="320" x2="512" y2="320" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="0" y1="384" x2="512" y2="384" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="0" y1="448" x2="512" y2="448" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="64" y1="0" x2="64" y2="512" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="128" y1="0" x2="128" y2="512" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="192" y1="0" x2="192" y2="512" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="256" y1="0" x2="256" y2="512" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="320" y1="0" x2="320" y2="512" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="384" y1="0" x2="384" y2="512" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="448" y1="0" x2="448" y2="512" stroke="#00d4aa" stroke-width="1"/>
+  </g>
+
+  <!-- Decorative arc rings (background depth) -->
+  <circle cx="256" cy="210" r="155" fill="none" stroke="#00d4aa" stroke-width="1" stroke-dasharray="8 6" opacity="0.10"/>
+  <circle cx="256" cy="210" r="180" fill="none" stroke="#00b4d8" stroke-width="1" stroke-dasharray="4 8" opacity="0.07"/>
+
+  <!-- Main blood drop shape (centered, upward tip) -->
+  <!-- Drop: tip at top, bulge at bottom -->
+  <g filter="url(#shadow)">
+    <path d="
+      M 256 88
+      C 256 88, 172 168, 172 228
+      C 172 274, 210 310, 256 310
+      C 302 310, 340 274, 340 228
+      C 340 168, 256 88, 256 88
+      Z
+    " fill="url(#dropGrad)"/>
+    <!-- Inner highlight -->
+    <path d="
+      M 256 88
+      C 256 88, 172 168, 172 228
+      C 172 274, 210 310, 256 310
+      C 302 310, 340 274, 340 228
+      C 340 168, 256 88, 256 88
+      Z
+    " fill="url(#dropGlow)" opacity="0.6"/>
+    <!-- Shine highlight -->
+    <ellipse cx="228" cy="185" rx="22" ry="30" fill="white" opacity="0.18" transform="rotate(-15,228,185)"/>
+    <ellipse cx="221" cy="178" rx="9" ry="13" fill="white" opacity="0.22" transform="rotate(-15,221,178)"/>
+  </g>
+
+  <!-- ECG / heartbeat line through drop center -->
+  <g filter="url(#glow)">
+    <polyline
+      points="
+        186,228
+        210,228
+        220,200
+        232,262
+        244,215
+        256,228
+        270,228
+        278,210
+        286,245
+        294,228
+        326,228
+      "
+      fill="none"
+      stroke="url(#pulseGrad)"
+      stroke-width="5.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+
+  <!-- Small dot accent at drop tip -->
+  <circle cx="256" cy="97" r="5" fill="white" opacity="0.5"/>
+
+  <!-- Bottom text area: "GLUCO" -->
+  <text
+    x="256"
+    y="372"
+    text-anchor="middle"
+    font-family="'Georgia', 'Times New Roman', serif"
+    font-size="62"
+    font-weight="700"
+    letter-spacing="6"
+    fill="#ffffff"
+  >GLUCO</text>
+
+  <!-- Thin divider line -->
+  <rect x="156" y="386" width="200" height="2.5" rx="1.25" fill="url(#pulseGrad)" opacity="0.7"/>
+
+  <!-- "TAKİP" subtitle -->
+  <text
+    x="256"
+    y="424"
+    text-anchor="middle"
+    font-family="'Georgia', 'Times New Roman', serif"
+    font-size="26"
+    font-weight="400"
+    letter-spacing="12"
+    fill="#00d4aa"
+    opacity="0.9"
+  >TAKİP</text>
+
+  <!-- Corner dot accents -->
+  <circle cx="108" cy="108" r="4" fill="#00d4aa" opacity="0.25"/>
+  <circle cx="404" cy="108" r="4" fill="#00d4aa" opacity="0.25"/>
+  <circle cx="108" cy="404" r="4" fill="#00d4aa" opacity="0.25"/>
+  <circle cx="404" cy="404" r="4" fill="#00d4aa" opacity="0.25"/>
+
+  <!-- Subtle top glow bloom -->
+  <ellipse cx="256" cy="80" rx="90" ry="30" fill="#00d4aa" opacity="0.06"/>
+</svg>
