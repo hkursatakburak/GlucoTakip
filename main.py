@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
+from sqlalchemy.orm import Session
 import os
 from dotenv import load_dotenv
 
