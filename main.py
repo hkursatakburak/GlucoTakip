@@ -13,8 +13,17 @@ load_dotenv()
 import models, database, crud
 from routers import auth, measurements, reports, admin
 
+from sqlalchemy import text
+
 # Create DB tables
 models.Base.metadata.create_all(bind=database.engine)
+
+# Auto-migrate: Add 'language' column if missing
+try:
+    with database.engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN language VARCHAR DEFAULT 'tr'"))
+except Exception:
+    pass  # Column already exists or another error occurred
 
 app = FastAPI(title="GlucoTakip", description="Şeker Takip Uygulaması")
 
