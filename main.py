@@ -70,6 +70,13 @@ def privacy_page(request: Request):
     i18n.setup_templates(templates)
     return templates.TemplateResponse("privacy.html", {"request": request})
 
+@app.get("/ads.txt", tags=["Pages"])
+def ads_txt():
+    """Serve ads.txt for Google AdSense domain verification."""
+    from fastapi.responses import PlainTextResponse
+    content = "google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0"
+    return PlainTextResponse(content=content)
+
 # .well-known klasörünü dışarı açıyoruz
 os.makedirs(".well-known", exist_ok=True)
 app.mount("/.well-known", StaticFiles(directory=".well-known"), name="well-known")

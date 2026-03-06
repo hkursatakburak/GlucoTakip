@@ -33,6 +33,9 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
     </style>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+        crossorigin="anonymous"></script>
 </head>
 
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
@@ -71,11 +74,23 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200 mt-auto">
+        <!-- Footer Ad Banner (shown to all users) -->
+        <div class="max-w-4xl mx-auto px-4 pt-4">
+            <ins class="adsbygoogle ad-banner-footer"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="1111111111"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
         <div
             class="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row justify-between items-center text-sm text-slate-500">
             <div>&copy; 2026 {{ _('app.title', default='GlucoTakip') }}. {{ _('app.footer_msg', default='Sağlıklı Günler
                 Dileriz.') }}</div>
-            <div class="mt-4 sm:mt-0 flex gap-2">
+            <div class="mt-4 sm:mt-0 flex gap-4">
+                <a href="/privacy" class="hover:text-blue-500 transition-colors">{{ _('privacy.title', default='Gizlilik') }}</a>
+                <span class="text-slate-300">|</span>
                 <a href="/set-language?lang=tr" class="hover:text-blue-500 transition-colors">TR</a>
                 <span class="text-slate-300">|</span>
                 <a href="/set-language?lang=en" class="hover:text-blue-500 transition-colors">EN</a>
