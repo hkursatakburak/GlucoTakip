@@ -109,7 +109,44 @@
 
 </div>
 
-<!-- Pass data to JS -->
+<!-- html2pdf.js must be loaded BEFORE functions that call html2pdf() -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+
+<!-- Hidden PDF Report Template (off-screen, rendered by html2pdf.js) -->
+<div id="pdf-report-template" style="position: absolute; top: -9999px; left: -9999px; width: 794px; background: white; padding: 40px; font-family: Arial, sans-serif;">
+    <div style="text-align:center; border-bottom: 2px solid #3b82f6; padding-bottom: 16px; margin-bottom: 24px;">
+        <h1 style="font-size: 24px; font-weight: bold; color: #1e293b; margin: 0;">{{ _('dashboard.pdf_title') }}</h1>
+        <p style="color: #64748b; margin-top: 8px;">{{ _('dashboard.pdf_date') }}: <span id="pdf-current-date"></span></p>
+    </div>
+    <h2 style="font-size: 16px; font-weight: bold; color: #334155; margin-bottom: 12px;">{{ _('dashboard.chart_title') }}</h2>
+    <div id="pdf-chart-container" style="width: 100%; height: 280px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 28px; overflow: hidden; display: flex; align-items: center; justify-content: center;"></div>
+    <h2 style="font-size: 16px; font-weight: bold; color: #334155; margin-bottom: 12px;">{{ _('dashboard.recent_title') }}</h2>
+    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+            <tr style="background: #eff6ff;">
+                <th style="padding: 10px 8px; text-align: left; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('admin.table_date') }}</th>
+                <th style="padding: 10px 8px; text-align: left; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('admin.table_category') }}</th>
+                <th style="padding: 10px 8px; text-align: center; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('admin.table_value') }}</th>
+                <th style="padding: 10px 8px; text-align: left; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('add_measurement.notes_label') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in measurements %}
+            <tr style="border: 1px solid #e2e8f0; {% if loop.index is odd %}background: #f8fafc;{% endif %}">
+                <td style="padding: 8px; border: 1px solid #e2e8f0;">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td style="padding: 8px; border: 1px solid #e2e8f0;">{{ _('categories.' ~ m.category.value) }}</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; border: 1px solid #e2e8f0; color: #2563eb;">{{ m.value }} mg/dL</td>
+                <td style="padding: 8px; border: 1px solid #e2e8f0; color: #64748b;">{{ m.notes or '-' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="padding: 16px; text-align: center; color: #94a3b8;">{{ _('dashboard.no_measurements') }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="margin-top: 24px; font-size: 11px; color: #94a3b8; text-align: center;">GlucoTakip &bull; glucotakip.onrender.com</p>
+</div>
+
+<!-- Chart.js Data -->
 <script id="chartData" type="application/json">
     {{ chart_data | tojson | safe }}
 </script>
@@ -286,32 +323,39 @@
     // Download PDF natively on Frontend
     function downloadPDF() {
         const template = document.getElementById('pdf-report-template');
-        const chartContainer = document.getElementById('pdf-chart-container');
-        
-        // 1. Set current date
-        const today = new Date();
-        document.getElementById('pdf-current-date').innerText = today.toLocaleDateString();
+        if (!template) {
+            console.error('PDF template element not found!');
+            return;
+        }
+        if (typeof html2pdf === 'undefined') {
+            console.error('html2pdf library not loaded!');
+            alert('PDF kütüphanesi yüklenemedi. Sayfayı yenileyip tekrar deneyin.');
+            return;
+        }
 
-        // 2. Insert Chart as Image (safe for html2pdf)
+        // Set current date
+        const dateEl = document.getElementById('pdf-current-date');
+        if (dateEl) dateEl.innerText = new Date().toLocaleDateString('tr-TR');
+
+        // Insert Chart as an <img> (html2pdf cannot render canvas directly)
         const originalCanvas = document.getElementById('bloodSugarChart');
-        if (originalCanvas) {
-            chartContainer.innerHTML = ''; // clear previous
+        const chartContainer = document.getElementById('pdf-chart-container');
+        if (originalCanvas && chartContainer) {
+            chartContainer.innerHTML = '';
             const img = document.createElement('img');
             img.src = originalCanvas.toDataURL('image/png', 1.0);
-            img.style.width = '100%';
-            img.style.objectFit = 'contain';
+            img.style.cssText = 'max-width:100%; max-height:100%; object-fit:contain;';
             chartContainer.appendChild(img);
         }
 
         const opt = {
-            margin:       0.4,
-            filename:     'GlucoTakip_Rapor.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
-            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            margin:      [0.3, 0.3, 0.3, 0.3],
+            filename:    'GlucoTakip_Rapor.pdf',
+            image:       { type: 'jpeg', quality: 0.95 },
+            html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
+            jsPDF:       { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
-        
-        // Disable buttons / show loading if desired
+
         html2pdf().set(opt).from(template).save();
     }
 </script>

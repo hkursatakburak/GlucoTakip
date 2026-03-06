@@ -20,7 +20,7 @@ async def export_data(
     if not user:
         return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
         
-    end_date = datetime.utcnow()
+    end_date = datetime.now()
     if date_range == "7":
         start_date = end_date - timedelta(days=7)
     elif date_range == "30":
@@ -28,9 +28,12 @@ async def export_data(
     elif date_range == "90":
         start_date = end_date - timedelta(days=90)
     else:
-        # Default all time
-        start_date = end_date - timedelta(days=3650)
+        # Default all time — go back 20 years to catch everything
+        start_date = end_date - timedelta(days=7300)
         
+    measurements = crud.get_measurements_by_date_range(db, user.id, start_date, end_date)
+    print(f"[EXPORT] user={user.id} range={date_range} rows={len(list(measurements))}")
+    # Re-fetch after consuming the list
     measurements = crud.get_measurements_by_date_range(db, user.id, start_date, end_date)
     
     lang = i18n.get_language(request)
