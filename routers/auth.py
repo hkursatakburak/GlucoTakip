@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from typing import Any
 import crud, schemas, database, auth
 import os
 from authlib.integrations.starlette_client import OAuth
@@ -160,7 +161,7 @@ async def verify_email(request: Request, token: str, db: Session = Depends(datab
 
 
 @router.get("/login", response_class=HTMLResponse)
-async def login_page(request: Request, registered: str = None, verified: str = None):
+async def login_page(request: Request, registered: str | None = None, verified: str | None = None):
     return templates.TemplateResponse("login.html", {"request": request, "registered": registered, "verified": verified})
 
 @router.get("/apple-soon", response_class=HTMLResponse)
@@ -205,7 +206,7 @@ async def login(
     
     response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     
-    cookie_kwargs = {
+    cookie_kwargs: dict[str, Any] = {
         "key": "access_token",
         "value": f"Bearer {access_token}",
         "httponly": True,
