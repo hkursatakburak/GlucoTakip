@@ -3,7 +3,8 @@ import os
 from typing import Dict, Any
 from fastapi import Request
 
-LOCALES_DIR = os.path.join(os.path.dirname(__file__), "locales")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOCALES_DIR = os.path.join(BASE_DIR, "locales")
 
 def load_translations(lang: str) -> Dict[str, Any]:
     file_path = os.path.join(LOCALES_DIR, f"{lang}.json")
@@ -11,10 +12,15 @@ def load_translations(lang: str) -> Dict[str, Any]:
         # Fallback to Turkish
         file_path = os.path.join(LOCALES_DIR, "tr.json")
         if not os.path.exists(file_path):
+            print(f"ERROR: Translation file not found at {file_path}")
             return {}
             
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"ERROR loading translation file {file_path}: {e}")
+        return {}
 
 # Global translations cache
 translations_cache: Dict[str, Dict[str, Any]] = {}
