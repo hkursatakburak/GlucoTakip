@@ -54,7 +54,7 @@
                                 <span class="text-lg font-bold">{{ m.value }}</span>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-slate-900">{{ m.category.value }}</p>
+                                <p class="text-sm font-medium text-slate-900">{{ _('categories.' ~ m.category.value) }}</p>
                                 <p class="text-xs text-slate-500">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') }}</p>
                             </div>
                         </div>
@@ -275,7 +275,7 @@
         {% else %}
             let text = "{{ _('dashboard.wa_text') }}\n\n";
             {% for m in measurements[:3] %}
-            text += "• {{ m.measured_at.strftime('%d.%m.%Y %H:%M') }} | {{ m.category.value }}: {{ m.value }} mg/dL\n";
+            text += "• {{ m.measured_at.strftime('%d.%m.%Y %H:%M') }} | {{ _('categories.' ~ m.category.value) }}: {{ m.value }} mg/dL\n";
             {% endfor %}
             const url = "https://wa.me/?text=" + encodeURIComponent(text);
             window.open(url, '_blank');

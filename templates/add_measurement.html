@@ -38,7 +38,7 @@
                 <select id="category" name="category" required
                     class="block w-full rounded-xl border border-slate-300 px-4 py-4 focus:border-blue-500 focus:ring-blue-500 text-lg shadow-sm transition-colors bg-white">
                     {% for cat in categories %}
-                    <option value="{{ cat }}">{{ cat }}</option>
+                    <option value="{{ cat }}">{{ _('categories.' ~ cat) }}</option>
                     {% endfor %}
                 </select>
             </div>

@@ -12,6 +12,12 @@
         "register": "Kayıt Ol",
         "logout": "Çıkış"
     },
+    "categories": {
+        "Açlık": "Açlık",
+        "Tokluk": "Tokluk",
+        "Yatmadan Önce": "Yatmadan Önce",
+        "Rastgele": "Rastgele"
+    },
     "login": {
         "title": "Hoş Geldiniz",
         "no_account": "Hesabınız yok mu?",

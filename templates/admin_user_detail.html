@@ -413,7 +413,7 @@
                                 <span class="val-normal">{{ m.value }}</span>
                                 {% endif %}
                         </td>
-                        <td>{{ m.category }}</td>
+                        <td>{{ _('categories.' ~ m.category.value) }}</td>
                         <td style="color:var(--muted);">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') if m.measured_at
                             else '—' }}</td>
                         <td style="color:var(--muted);font-size:13px;">{{ m.notes or '—' }}</td>

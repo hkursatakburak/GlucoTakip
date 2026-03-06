@@ -12,6 +12,12 @@
         "register": "Register",
         "logout": "Logout"
     },
+    "categories": {
+        "Açlık": "Fasting",
+        "Tokluk": "After Meal",
+        "Yatmadan Önce": "Before Sleep",
+        "Rastgele": "Random"
+    },
     "login": {
         "title": "Welcome",
         "no_account": "Don't have an account?",

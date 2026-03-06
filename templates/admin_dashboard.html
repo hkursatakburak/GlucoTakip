@@ -337,11 +337,11 @@
           <tr>
             <td><strong>{{ m.value }}</strong></td>
             <td>
-              {% if m.value < 70 %} <span class="tag tag-blue">{{ m.category }}</span>
+              {% if m.value < 70 %} <span class="tag tag-blue">{{ _('categories.' ~ m.category.value) }}</span>
                 {% elif m.value > 180 %}
-                <span class="tag tag-amber">{{ m.category }}</span>
+                <span class="tag tag-amber">{{ _('categories.' ~ m.category.value) }}</span>
                 {% else %}
-                <span class="tag tag-green">{{ m.category }}</span>
+                <span class="tag tag-green">{{ _('categories.' ~ m.category.value) }}</span>
                 {% endif %}
             </td>
             <td>{{ m.measured_at.strftime('%d.%m.%Y %H:%M') if m.measured_at else '—' }}</td>
