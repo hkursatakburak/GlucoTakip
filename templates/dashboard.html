@@ -292,26 +292,16 @@
         const today = new Date();
         document.getElementById('pdf-current-date').innerText = today.toLocaleDateString();
 
-        // 2. Clone the canvas into the PDF template
+        // 2. Insert Chart as Image (safe for html2pdf)
         const originalCanvas = document.getElementById('bloodSugarChart');
         if (originalCanvas) {
             chartContainer.innerHTML = ''; // clear previous
-            const clonedCanvas = document.createElement('canvas');
-            clonedCanvas.width = originalCanvas.width;
-            clonedCanvas.height = originalCanvas.height;
-            const destCtx = clonedCanvas.getContext('2d');
-            destCtx.drawImage(originalCanvas, 0, 0);
-            
-            // Re-style cloned canvas to fit the template nicely
-            clonedCanvas.style.width = '100%';
-            clonedCanvas.style.height = '100%';
-            clonedCanvas.style.objectFit = 'contain';
-            
-            chartContainer.appendChild(clonedCanvas);
+            const img = document.createElement('img');
+            img.src = originalCanvas.toDataURL('image/png', 1.0);
+            img.style.width = '100%';
+            img.style.objectFit = 'contain';
+            chartContainer.appendChild(img);
         }
-
-        // 3. Make visible temporarily for html2pdf to read it (ensure it's absolute positioned and offscreen or behind)
-        template.classList.remove('hidden');
 
         const opt = {
             margin:       0.4,
@@ -322,10 +312,7 @@
         };
         
         // Disable buttons / show loading if desired
-        html2pdf().set(opt).from(template).save().then(() => {
-            // 4. Hide it back after generation
-            template.classList.add('hidden');
-        });
+        html2pdf().set(opt).from(template).save();
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

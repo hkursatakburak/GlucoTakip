@@ -6,6 +6,7 @@ import crud, database
 from routers.auth import get_current_user_from_cookie
 import pandas as pd
 import os
+import i18n
 
 router = APIRouter(tags=["Reports"])
 
