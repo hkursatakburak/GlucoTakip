@@ -51,7 +51,10 @@
         "export_30d": "Son 1 Ay",
         "export_90d": "Son 3 Ay",
         "export_all": "Tüm Zamanlar",
-        "export_btn": "Excel İndir"
+        "export_btn": "Excel İndir",
+        "export_pdf_btn": "PDF İndir",
+        "share_wa_btn": "WhatsApp'ta Paylaş",
+        "wa_text": "GlucoTakip Raporum: Son ölçümlerim..."
     },
     "admin": {
         "badge": "Yönetici",

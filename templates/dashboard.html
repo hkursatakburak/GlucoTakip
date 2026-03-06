@@ -17,8 +17,10 @@
         </div>
     </div>
 
-    <!-- Charts Section -->
-    <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-sm">
+    <!-- PDF Wrapper For Charts and Recent -->
+    <div id="pdf-content" class="space-y-8 p-1">
+        <!-- Charts Section -->
+        <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-sm">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium text-slate-900">{{ _('dashboard.chart_title') }}</h3>
             <div class="flex bg-slate-100 p-1 rounded-lg">
@@ -73,6 +75,7 @@
             {% endif %}
         </div>
     </div>
+    </div> <!-- /pdf-content wrapper -->
 
     <!-- Export Section -->
     <div class="glass-panel rounded-2xl p-6 shadow-sm border border-slate-200 border-t mt-4">
@@ -92,6 +95,14 @@
             <button type="submit"
                 class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors">
                 <i class="fa-solid fa-file-excel mr-2"></i> {{ _('dashboard.export_btn') }}
+            </button>
+            <button type="button" onclick="downloadPDF()"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors">
+                <i class="fa-solid fa-file-pdf mr-2"></i> {{ _('dashboard.export_pdf_btn') }}
+            </button>
+            <button type="button" onclick="shareWhatsApp()"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 transition-colors">
+                <i class="fa-brands fa-whatsapp mr-2 text-lg"></i> {{ _('dashboard.share_wa_btn') }}
             </button>
         </form>
     </div>
@@ -256,5 +267,34 @@
     document.addEventListener("DOMContentLoaded", () => {
         updateChart('week');
     });
+
+    // Share to WhatsApp
+    function shareWhatsApp() {
+        {% if not measurements %}
+            alert("{{ _('dashboard.no_measurements') }}");
+        {% else %}
+            let text = "{{ _('dashboard.wa_text') }}\n\n";
+            {% for m in measurements[:3] %}
+            text += "• {{ m.measured_at.strftime('%d.%m.%Y %H:%M') }} | {{ m.category.value }}: {{ m.value }} mg/dL\n";
+            {% endfor %}
+            const url = "https://wa.me/?text=" + encodeURIComponent(text);
+            window.open(url, '_blank');
+        {% endif %}
+    }
+
+    // Download PDF natively on Frontend
+    function downloadPDF() {
+        const element = document.getElementById('pdf-content');
+        const opt = {
+            margin:       0.3,
+            filename:     'GlucoTakip_Rapor.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        // Disable buttons / show loading if desired
+        html2pdf().set(opt).from(element).save();
+    }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {% endblock %}
