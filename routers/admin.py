@@ -147,16 +147,27 @@ async def admin_delete_user(
 
 @router.get("/export/csv")
 async def export_csv(
+    request: Request,
     db: Session = Depends(database.get_db),
     admin=Depends(require_admin),
 ):
     rows = crud.get_all_measurements_anonymous(db)
 
+    lang = i18n.get_language(request)
+    
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["id", "user_id", "value", "category", "measured_at", "notes"])
+    
+    val_header = i18n.get_translation("admin.table_value", lang)
+    cat_header = i18n.get_translation("admin.table_category", lang)
+    date_header = i18n.get_translation("admin.table_date", lang)
+    notes_header = i18n.get_translation("add_measurement.notes_label", lang)
+    
+    writer.writerow(["ID", "User ID", val_header, cat_header, date_header, notes_header])
     for r in rows:
-        writer.writerow([r.id, r.user_id, r.value, r.category, r.measured_at, r.notes])
+        cat_loc = i18n.get_translation(f"categories.{r.category.value}", lang)
+        measured = r.measured_at.strftime('%Y-%m-%d %H:%M') if r.measured_at else ""
+        writer.writerow([r.id, r.user_id, r.value, cat_loc, measured, r.notes])
 
     output.seek(0)
     return StreamingResponse(
@@ -170,19 +181,22 @@ async def export_csv(
 
 @router.get("/export/excel")
 async def export_excel(
+    request: Request,
     db: Session = Depends(database.get_db),
     admin=Depends(require_admin),
 ):
     rows = crud.get_all_measurements_anonymous(db)
 
+    lang = i18n.get_language(request)
+    
     data = [
         {
-            "id": r.id,
-            "user_id": r.user_id,
-            "value": r.value,
-            "category": str(r.category),
-            "measured_at": r.measured_at,
-            "notes": r.notes,
+            "ID": r.id,
+            "User ID": r.user_id,
+            i18n.get_translation("admin.table_value", lang): r.value,
+            i18n.get_translation("admin.table_category", lang): i18n.get_translation(f"categories.{r.category.value}", lang),
+            i18n.get_translation("admin.table_date", lang): r.measured_at.strftime('%Y-%m-%d %H:%M'),
+            i18n.get_translation("add_measurement.notes_label", lang): r.notes or "",
         }
         for r in rows
     ]
@@ -191,6 +205,8 @@ async def export_excel(
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Measurements")
+    
+    # Must be outside the 'with' block to ensure file is finalized before reading
     output.seek(0)
 
     return StreamingResponse(

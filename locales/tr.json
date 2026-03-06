@@ -60,7 +60,9 @@
         "export_btn": "Excel İndir",
         "export_pdf_btn": "PDF İndir",
         "share_wa_btn": "WhatsApp'ta Paylaş",
-        "wa_text": "GlucoTakip Raporum: Son ölçümlerim..."
+        "wa_text": "GlucoTakip Raporum: Son ölçümlerim...",
+        "pdf_title": "GlucoTakip Raporu",
+        "pdf_date": "Rapor Tarihi"
     },
     "admin": {
         "badge": "Yönetici",

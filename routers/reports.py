@@ -32,13 +32,20 @@ async def export_data(
         
     measurements = crud.get_measurements_by_date_range(db, user.id, start_date, end_date)
     
+    lang = i18n.get_language(request)
+    
+    val_header = i18n.get_translation("admin.table_value", lang)
+    cat_header = i18n.get_translation("admin.table_category", lang)
+    date_header = i18n.get_translation("admin.table_date", lang)
+    notes_header = i18n.get_translation("add_measurement.notes_label", lang)
+
     data = []
     for m in measurements:
         data.append({
-            "Tarih ve Saat": m.measured_at.strftime("%Y-%m-%d %H:%M"),
-            "Şeker Değeri (mg/dL)": m.value,
-            "Kategori": m.category.value,
-            "Notlar": m.notes or ""
+            date_header: m.measured_at.strftime("%Y-%m-%d %H:%M"),
+            val_header: m.value,
+            cat_header: i18n.get_translation(f"categories.{m.category.value}", lang),
+            notes_header: m.notes or ""
         })
         
     df = pd.DataFrame(data)
@@ -46,7 +53,9 @@ async def export_data(
     if not os.path.exists("temp"):
         os.makedirs("temp")
     file_path = f"temp/diabetes_report_{user.id}.xlsx"
-    df.to_excel(file_path, index=False)
+    
+    with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Measurements")
     
     return FileResponse(
         path=file_path,

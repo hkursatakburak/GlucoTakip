@@ -60,7 +60,9 @@
         "export_btn": "Download Excel",
         "export_pdf_btn": "Download PDF",
         "share_wa_btn": "Share on WhatsApp",
-        "wa_text": "My GlucoTakip Report: Recent measurements..."
+        "wa_text": "My GlucoTakip Report: Recent measurements...",
+        "pdf_title": "GlucoTakip Report",
+        "pdf_date": "Date of Generation"
     },
     "admin": {
         "badge": "Admin",

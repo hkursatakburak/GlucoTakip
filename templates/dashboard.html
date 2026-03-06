@@ -285,16 +285,47 @@
 
     // Download PDF natively on Frontend
     function downloadPDF() {
-        const element = document.getElementById('pdf-content');
+        const template = document.getElementById('pdf-report-template');
+        const chartContainer = document.getElementById('pdf-chart-container');
+        
+        // 1. Set current date
+        const today = new Date();
+        document.getElementById('pdf-current-date').innerText = today.toLocaleDateString();
+
+        // 2. Clone the canvas into the PDF template
+        const originalCanvas = document.getElementById('bloodSugarChart');
+        if (originalCanvas) {
+            chartContainer.innerHTML = ''; // clear previous
+            const clonedCanvas = document.createElement('canvas');
+            clonedCanvas.width = originalCanvas.width;
+            clonedCanvas.height = originalCanvas.height;
+            const destCtx = clonedCanvas.getContext('2d');
+            destCtx.drawImage(originalCanvas, 0, 0);
+            
+            // Re-style cloned canvas to fit the template nicely
+            clonedCanvas.style.width = '100%';
+            clonedCanvas.style.height = '100%';
+            clonedCanvas.style.objectFit = 'contain';
+            
+            chartContainer.appendChild(clonedCanvas);
+        }
+
+        // 3. Make visible temporarily for html2pdf to read it (ensure it's absolute positioned and offscreen or behind)
+        template.classList.remove('hidden');
+
         const opt = {
-            margin:       0.3,
+            margin:       0.4,
             filename:     'GlucoTakip_Rapor.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
+            html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
+        
         // Disable buttons / show loading if desired
-        html2pdf().set(opt).from(element).save();
+        html2pdf().set(opt).from(template).save().then(() => {
+            // 4. Hide it back after generation
+            template.classList.add('hidden');
+        });
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
