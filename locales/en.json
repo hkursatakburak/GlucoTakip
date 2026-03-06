@@ -94,5 +94,15 @@
         "table_date": "Date",
         "table_user_id": "User ID",
         "empty_measurements": "No measurements yet."
+    },
+    "add_measurement": {
+        "title": "Add New Measurement",
+        "value_label": "Blood Sugar (mg/dL)",
+        "value_placeholder": "e.g. 110",
+        "date_label": "Measurement Date & Time",
+        "category_label": "Category",
+        "notes_label": "Notes (Optional)",
+        "notes_placeholder": "e.g. 2 hours after meal...",
+        "save_btn": "Save"
     }
 }

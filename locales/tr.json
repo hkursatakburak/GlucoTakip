@@ -94,5 +94,15 @@
         "table_date": "Tarih",
         "table_user_id": "Kullanıcı ID",
         "empty_measurements": "Henüz ölçüm bulunmuyor."
+    },
+    "add_measurement": {
+        "title": "Yeni Ölçüm Ekle",
+        "value_label": "Şeker Değeri (mg/dL)",
+        "value_placeholder": "Örn: 110",
+        "date_label": "Ölçüm Tarihi ve Saati",
+        "category_label": "Ölçüm Kategorisi",
+        "notes_label": "Notlar (İsteğe bağlı)",
+        "notes_placeholder": "Örn: Yemekten 2 saat sonra...",
+        "save_btn": "Kaydet"
     }
 }
