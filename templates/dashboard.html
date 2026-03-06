@@ -123,38 +123,40 @@
 <!-- html2pdf.js must be loaded BEFORE functions that call html2pdf() -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
 
-<!-- Hidden PDF Report Template (off-screen, rendered by html2pdf.js) -->
-<div id="pdf-report-template" style="position: absolute; top: -9999px; left: -9999px; width: 794px; background: white; padding: 40px; font-family: Arial, sans-serif;">
-    <div style="text-align:center; border-bottom: 2px solid #3b82f6; padding-bottom: 16px; margin-bottom: 24px;">
-        <h1 style="font-size: 24px; font-weight: bold; color: #1e293b; margin: 0;">{{ _('dashboard.pdf_title') }}</h1>
-        <p style="color: #64748b; margin-top: 8px;">{{ _('dashboard.pdf_date') }}: <span id="pdf-current-date"></span></p>
+<!-- Hidden PDF Report Template (display:none — cloned to body during generation) -->
+<div id="pdf-report-template" style="display:none;">
+    <div style="width:794px; background:white; padding:40px; font-family:Arial,sans-serif; box-sizing:border-box;">
+        <div style="text-align:center; border-bottom:2px solid #3b82f6; padding-bottom:16px; margin-bottom:24px;">
+            <h1 style="font-size:24px; font-weight:bold; color:#1e293b; margin:0;">{{ _('dashboard.pdf_title') }}</h1>
+            <p style="color:#64748b; margin-top:8px;">{{ _('dashboard.pdf_date') }}: <span id="pdf-current-date"></span></p>
+        </div>
+        <h2 style="font-size:16px; font-weight:bold; color:#334155; margin-bottom:12px;">{{ _('dashboard.chart_title') }}</h2>
+        <div id="pdf-chart-container" style="width:100%; height:280px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:center;"></div>
+        <h2 style="font-size:16px; font-weight:bold; color:#334155; margin-bottom:12px;">{{ _('dashboard.recent_title') }}</h2>
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead>
+                <tr style="background:#eff6ff;">
+                    <th style="padding:10px 8px; text-align:left; border:1px solid #bfdbfe; color:#1d4ed8;">{{ _('admin.table_date') }}</th>
+                    <th style="padding:10px 8px; text-align:left; border:1px solid #bfdbfe; color:#1d4ed8;">{{ _('admin.table_category') }}</th>
+                    <th style="padding:10px 8px; text-align:center; border:1px solid #bfdbfe; color:#1d4ed8;">{{ _('admin.table_value') }}</th>
+                    <th style="padding:10px 8px; text-align:left; border:1px solid #bfdbfe; color:#1d4ed8;">{{ _('add_measurement.notes_label') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in measurements %}
+                <tr style="border:1px solid #e2e8f0; {% if loop.index is odd %}background:#f8fafc;{% endif %}">
+                    <td style="padding:8px; border:1px solid #e2e8f0;">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td style="padding:8px; border:1px solid #e2e8f0;">{{ _('categories.' ~ m.category.value) }}</td>
+                    <td style="padding:8px; text-align:center; font-weight:bold; border:1px solid #e2e8f0; color:#2563eb;">{{ m.value }} mg/dL</td>
+                    <td style="padding:8px; border:1px solid #e2e8f0; color:#64748b;">{{ m.notes or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="padding:16px; text-align:center; color:#94a3b8;">{{ _('dashboard.no_measurements') }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p style="margin-top:24px; font-size:11px; color:#94a3b8; text-align:center;">GlucoTakip &bull; glucotakip.onrender.com</p>
     </div>
-    <h2 style="font-size: 16px; font-weight: bold; color: #334155; margin-bottom: 12px;">{{ _('dashboard.chart_title') }}</h2>
-    <div id="pdf-chart-container" style="width: 100%; height: 280px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 28px; overflow: hidden; display: flex; align-items: center; justify-content: center;"></div>
-    <h2 style="font-size: 16px; font-weight: bold; color: #334155; margin-bottom: 12px;">{{ _('dashboard.recent_title') }}</h2>
-    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-        <thead>
-            <tr style="background: #eff6ff;">
-                <th style="padding: 10px 8px; text-align: left; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('admin.table_date') }}</th>
-                <th style="padding: 10px 8px; text-align: left; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('admin.table_category') }}</th>
-                <th style="padding: 10px 8px; text-align: center; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('admin.table_value') }}</th>
-                <th style="padding: 10px 8px; text-align: left; border: 1px solid #bfdbfe; color: #1d4ed8;">{{ _('add_measurement.notes_label') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for m in measurements %}
-            <tr style="border: 1px solid #e2e8f0; {% if loop.index is odd %}background: #f8fafc;{% endif %}">
-                <td style="padding: 8px; border: 1px solid #e2e8f0;">{{ m.measured_at.strftime('%d.%m.%Y %H:%M') }}</td>
-                <td style="padding: 8px; border: 1px solid #e2e8f0;">{{ _('categories.' ~ m.category.value) }}</td>
-                <td style="padding: 8px; text-align: center; font-weight: bold; border: 1px solid #e2e8f0; color: #2563eb;">{{ m.value }} mg/dL</td>
-                <td style="padding: 8px; border: 1px solid #e2e8f0; color: #64748b;">{{ m.notes or '-' }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="4" style="padding: 16px; text-align: center; color: #94a3b8;">{{ _('dashboard.no_measurements') }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p style="margin-top: 24px; font-size: 11px; color: #94a3b8; text-align: center;">GlucoTakip &bull; glucotakip.onrender.com</p>
 </div>
 
 <!-- Chart.js Data -->
@@ -331,43 +333,51 @@
         }
     }
 
-    // Download PDF natively on Frontend
+    // Download PDF — uses a visible clone so html2canvas can measure dimensions correctly
     function downloadPDF() {
         const template = document.getElementById('pdf-report-template');
-        if (!template) {
-            console.error('PDF template element not found!');
-            return;
-        }
+        if (!template) { console.error('PDF template not found'); return; }
         if (typeof html2pdf === 'undefined') {
-            console.error('html2pdf library not loaded!');
-            alert('PDF kütüphanesi yüklenemedi. Sayfayı yenileyip tekrar deneyin.');
+            alert('PDF kütüphanesi yüklenmedi. Lütfen sayfayı yenileyin.');
             return;
         }
 
-        // Set current date
+        // Set today's date inside the template
         const dateEl = document.getElementById('pdf-current-date');
         if (dateEl) dateEl.innerText = new Date().toLocaleDateString('tr-TR');
 
-        // Insert Chart as an <img> (html2pdf cannot render canvas directly)
+        // Clone chart canvas → <img> so html2canvas can handle it
         const originalCanvas = document.getElementById('bloodSugarChart');
         const chartContainer = document.getElementById('pdf-chart-container');
         if (originalCanvas && chartContainer) {
             chartContainer.innerHTML = '';
             const img = document.createElement('img');
             img.src = originalCanvas.toDataURL('image/png', 1.0);
-            img.style.cssText = 'max-width:100%; max-height:100%; object-fit:contain;';
+            img.style.cssText = 'width:100%; height:100%; object-fit:contain;';
             chartContainer.appendChild(img);
         }
+
+        // --- KEY FIX: clone to body as a VISIBLE fixed overlay ---
+        // html2canvas cannot measure display:none or off-screen elements.
+        // We briefly show a clone positioned at (0,0) with z-index:-1 (invisible to user)
+        // then remove it after pdf is saved.
+        const clone = template.cloneNode(true);
+        clone.style.cssText = 'position:fixed; top:0; left:0; z-index:-9999; display:block; pointer-events:none; opacity:0;';
+        document.body.appendChild(clone);
 
         const opt = {
             margin:      [0.3, 0.3, 0.3, 0.3],
             filename:    'GlucoTakip_Rapor.pdf',
             image:       { type: 'jpeg', quality: 0.95 },
-            html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
             jsPDF:       { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 
-        html2pdf().set(opt).from(template).save();
+        html2pdf()
+            .set(opt)
+            .from(clone)
+            .save()
+            .then(() => document.body.removeChild(clone));
     }
 </script>
 {% endblock %}
