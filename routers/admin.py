@@ -11,11 +11,12 @@ from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-import crud, database
+import crud, database, i18n
 from routers.auth import get_current_user_from_cookie
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 templates = Jinja2Templates(directory="templates")
+i18n.setup_templates(templates)
 
 
 # ── Auth Guard ────────────────────────────────────────────────────────────────

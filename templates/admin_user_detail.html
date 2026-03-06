@@ -333,11 +333,11 @@
 <body>
     <nav>
         <span class="nav-brand">💧 GlucoTakip</span>
-        <span class="badge-admin">⚡ GOD MODE</span>
+        <span class="badge-admin">⚡ {{ _('admin.badge') }}</span>
         <div class="nav-links">
-            <a href="/admin">Dashboard</a>
-            <a href="/admin/users">← Kullanıcılar</a>
-            <a href="/logout">Çıkış</a>
+            <a href="/admin">{{ _('admin.nav_dashboard') }}</a>
+            <a href="/admin/users">← {{ _('admin.nav_users') }}</a>
+            <a href="/logout">{{ _('admin.nav_logout') }}</a>
         </div>
     </nav>
 
@@ -354,49 +354,51 @@
                 <div class="email">{{ target_user.email }}</div>
                 <div class="meta-row">
                     {% if target_user.is_verified %}
-                    <span class="tag tag-green">✅ Doğrulandı</span>
+                    <span class="tag tag-green">✅ {{ _('admin.tag_verified') }}</span>
                     {% else %}
-                    <span class="tag tag-muted">⏳ Doğrulanmadı</span>
+                    <span class="tag tag-muted">⏳ {{ _('admin.tag_not_verified') }}</span>
                     {% endif %}
                     {% if target_user.is_admin %}
-                    <span class="tag tag-admin">⚡ Admin</span>
+                    <span class="tag tag-admin">⚡ {{ _('admin.tag_admin') }}</span>
                     {% endif %}
                     {% if target_user.data_consent %}
-                    <span class="tag tag-green">📋 Veri Onayı Verildi</span>
+                    <span class="tag tag-green">📋 {{ _('admin.tag_consent') }}</span>
                     {% endif %}
                 </div>
-                <div class="profile-uid">UID: {{ target_user.id }}</div>
-                <div class="profile-uid">Kayıt: {{ target_user.created_at.strftime('%d.%m.%Y %H:%M') if
-                    target_user.created_at else '—' }}</div>
+                <div class="profile-uid">{{ _('admin.detail_uid').format(uid=target_user.id) }}</div>
+                <div class="profile-uid">{{
+                    _('admin.detail_reg_date').format(date=target_user.created_at.strftime('%d.%m.%Y %H:%M') if
+                    target_user.created_at else '—') }}</div>
             </div>
         </div>
 
         <!-- Password Change -->
         <div class="pwd-panel">
-            <h3>🔑 Şifre Zorla Değiştir</h3>
+            <h3>🔑 {{ _('admin.pwd_title') }}</h3>
             <form class="pwd-form" method="post" action="/admin/users/{{ target_user.id }}/set-password">
                 <div class="field">
-                    <label>Yeni Şifre</label>
-                    <input type="password" name="new_password" placeholder="En az 6 karakter" minlength="6" required>
+                    <label>{{ _('admin.pwd_new_label') }}</label>
+                    <input type="password" name="new_password" placeholder="{{ _('admin.pwd_placeholder') }}"
+                        minlength="6" required>
                 </div>
-                <button type="submit" class="btn btn-red">🔄 Şifreyi Güncelle</button>
+                <button type="submit" class="btn btn-red">🔄 {{ _('admin.pwd_update_btn') }}</button>
             </form>
         </div>
 
         <!-- Measurements -->
         <div class="section-header">
-            <span class="section-title">📊 Kan Şekeri Ölçümleri</span>
-            <span class="count-badge">{{ measurements|length }} kayıt</span>
+            <span class="section-title">📊 {{ _('admin.user_measurements_title') }}</span>
+            <span class="count-badge">{{ _('admin.user_measurements_count').format(count=measurements|length) }}</span>
         </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Değer (mg/dL)</th>
-                        <th>Kategori</th>
-                        <th>Tarih & Saat</th>
-                        <th>Not</th>
+                        <th>{{ _('admin.table_value') }}</th>
+                        <th>{{ _('admin.table_category') }}</th>
+                        <th>{{ _('admin.table_date_long') }}</th>
+                        <th>{{ _('admin.table_notes') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -418,8 +420,8 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">Bu kullanıcının
-                            ölçümü yok.</td>
+                        <td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">{{
+                            _('admin.user_no_measurements') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

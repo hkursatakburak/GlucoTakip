@@ -10,6 +10,7 @@ class UserBase(BaseModel):
     full_name: str
     data_consent: bool = False
     is_verified: bool = False
+    language: str = "tr"
 
 class UserCreate(UserBase):
     password: str

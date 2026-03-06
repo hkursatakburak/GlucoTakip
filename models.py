@@ -21,6 +21,7 @@ class User(Base):
     data_consent = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False)
     is_admin = Column(Boolean, default=False)
+    language = Column(String, default="tr")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     measurements = relationship("Measurement", back_populates="owner")

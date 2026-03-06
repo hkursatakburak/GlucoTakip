@@ -6,10 +6,11 @@
 <div class="min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <i class="fa-solid fa-user-plus text-blue-500 text-5xl mb-4"></i>
-        <h2 class="text-3xl font-bold tracking-tight text-slate-900">Kayıt Ol</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">{{ _('register.title') }}</h2>
         <p class="mt-2 text-sm text-slate-600">
-            Zaten hesabınız var mı?
-            <a href="/login" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">Giriş Yap</a>
+            {{ _('register.has_account') }}
+            <a href="/login" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">{{
+                _('register.login_link') }}</a>
         </p>
     </div>
 
@@ -30,7 +31,8 @@
 
             <form class="space-y-6" action="/register" method="POST">
                 <div>
-                    <label for="full_name" class="block text-sm font-medium text-slate-700">Ad Soyad</label>
+                    <label for="full_name" class="block text-sm font-medium text-slate-700">{{ _('register.name_label')
+                        }}</label>
                     <div class="mt-1">
                         <input id="full_name" name="full_name" type="text" required
                             class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
@@ -38,7 +40,8 @@
                 </div>
 
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-700">E-posta Adresi</label>
+                    <label for="email" class="block text-sm font-medium text-slate-700">{{ _('register.email_label')
+                        }}</label>
                     <div class="mt-1">
                         <input id="email" name="email" type="email" autocomplete="email" required
                             class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
@@ -46,7 +49,8 @@
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-slate-700">Şifre</label>
+                    <label for="password" class="block text-sm font-medium text-slate-700">{{
+                        _('register.password_label') }}</label>
                     <div class="mt-1">
                         <input id="password" name="password" type="password" required
                             class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
@@ -59,17 +63,14 @@
                             class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                     </div>
                     <div class="ml-3 text-sm">
-                        <label for="data_consent" class="font-medium text-slate-700">Bilimsel İzin</label>
-                        <p class="text-slate-500 text-xs mt-1">Verilerimin anonim olarak bilimsel çalışmalarda
-                            kullanılmasına izin veriyorum.</p>
+                        <label for="data_consent" class="font-medium text-slate-700">{{ _('register.consent_title')
+                            }}</label>
+                        <p class="text-slate-500 text-xs mt-1">{{ _('register.consent_desc') }}</p>
                     </div>
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit"
-                        class="flex w-full justify-center rounded-xl border border-transparent bg-blue-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform active:scale-95 text-lg">
-                        Hesap Oluştur
-                    </button>
+                    <button type="submit" {{ _('register.register_btn') }} </button>
                 </div>
 
                 <div class="mt-6">
@@ -78,7 +79,7 @@
                             <div class="w-full border-t border-slate-300"></div>
                         </div>
                         <div class="relative flex justify-center text-sm">
-                            <span class="bg-white px-2 text-slate-500">veya</span>
+                            <span class="bg-white px-2 text-slate-500">{{ _('login.or') }}</span>
                         </div>
                     </div>
 
@@ -86,12 +87,12 @@
                         <a href="/auth/google/login"
                             class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
                             <i class="fa-brands fa-google text-red-500 text-lg"></i>
-                            Google ile Devam Et
+                            {{ _('login.google_btn') }}
                         </a>
                         <a href="/auth/apple/login"
                             class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-colors">
                             <i class="fa-brands fa-apple text-lg"></i>
-                            Apple ile Devam Et
+                            {{ _('login.apple_btn') }}
                         </a>
                     </div>
                 </div>

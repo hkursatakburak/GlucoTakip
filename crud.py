@@ -10,6 +10,14 @@ def get_user(db: Session, user_id: str):
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
+def update_user_language(db: Session, user_id: str, language: str):
+    user = get_user(db, user_id)
+    if user:
+        user.language = language
+        db.commit()
+        db.refresh(user)
+    return user
+
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = get_password_hash(user.password)
     db_user = models.User(

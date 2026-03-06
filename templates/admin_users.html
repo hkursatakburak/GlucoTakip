@@ -237,23 +237,25 @@
 <body>
     <nav>
         <span class="nav-brand">💧 GlucoTakip</span>
-        <span class="badge-admin">⚡ GOD MODE</span>
+        <span class="badge-admin">⚡ {{ _('admin.badge') }}</span>
         <div class="nav-links">
-            <a href="/admin">Dashboard</a>
-            <a href="/admin/users" class="active">Kullanıcılar</a>
-            <a href="/">Ana Sayfa</a>
-            <a href="/logout">Çıkış</a>
+            <a href="/admin">{{ _('admin.nav_dashboard') }}</a>
+            <a href="/admin/users" class="active">{{ _('admin.nav_users') }}</a>
+            <a href="/">{{ _('admin.nav_home') }}</a>
+            <a href="/logout">{{ _('admin.nav_logout') }}</a>
         </div>
     </nav>
 
     <main>
         <div class="page-header">
             <div>
-                <h1>👥 Kullanıcı Yönetimi</h1>
-                <p style="color:var(--muted);font-size:14px;margin-top:4px;">Toplam {{ users|length }} kullanıcı</p>
+                <h1>👥 {{ _('admin.users_title') }}</h1>
+                <p style="color:var(--muted);font-size:14px;margin-top:4px;">{{
+                    _('admin.users_subtitle').format(count=users|length) }}</p>
             </div>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="🔍 İsim veya e-posta ara..." oninput="filterTable()">
+                <input type="text" id="searchInput" placeholder="🔍 {{ _('admin.search_placeholder') }}"
+                    oninput="filterTable()">
             </div>
         </div>
 
@@ -261,12 +263,12 @@
             <table id="usersTable">
                 <thead>
                     <tr>
-                        <th>Ad Soyad</th>
-                        <th>E-posta</th>
-                        <th>Durum</th>
-                        <th>Rol</th>
-                        <th>Kayıt Tarihi</th>
-                        <th>İşlemler</th>
+                        <th>{{ _('admin.table_name') }}</th>
+                        <th>{{ _('admin.table_email') }}</th>
+                        <th>{{ _('admin.table_status') }}</th>
+                        <th>{{ _('admin.table_role') }}</th>
+                        <th>{{ _('admin.table_reg_date') }}</th>
+                        <th>{{ _('admin.table_actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -276,16 +278,16 @@
                         <td style="color:var(--muted);">{{ u.email }}</td>
                         <td>
                             {% if u.is_verified %}
-                            <span class="tag tag-green">✅ Doğrulandı</span>
+                            <span class="tag tag-green">✅ {{ _('admin.tag_verified') }}</span>
                             {% else %}
-                            <span class="tag tag-muted">⏳ Bekliyor</span>
+                            <span class="tag tag-muted">⏳ {{ _('admin.tag_pending') }}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if u.is_admin %}
-                            <span class="tag tag-admin">⚡ Admin</span>
+                            <span class="tag tag-admin">⚡ {{ _('admin.tag_admin') }}</span>
                             {% else %}
-                            <span class="tag tag-muted">Kullanıcı</span>
+                            <span class="tag tag-muted">{{ _('admin.tag_user') }}</span>
                             {% endif %}
                         </td>
                         <td style="color:var(--muted);font-size:13px;">
@@ -293,24 +295,26 @@
                         </td>
                         <td>
                             <div class="action-group">
-                                <a class="btn btn-blue" href="/admin/users/{{ u.id }}">🔍 Detay</a>
+                                <a class="btn btn-blue" href="/admin/users/{{ u.id }}">🔍 {{ _('admin.btn_detail')
+                                    }}</a>
                                 <form method="post" action="/admin/users/{{ u.id }}/toggle-admin"
                                     style="display:inline;">
                                     <button type="submit" class="btn btn-purple">
-                                        {% if u.is_admin %}👤 Admin'i Al{% else %}⚡ Admin Yap{% endif %}
+                                        {% if u.is_admin %}👤 {{ _('admin.btn_revoke_admin') }}{% else %}⚡ {{
+                                        _('admin.btn_make_admin') }}{% endif %}
                                     </button>
                                 </form>
                                 <form method="post" action="/admin/users/{{ u.id }}/delete" style="display:inline;"
-                                    onsubmit="return confirm('{{ u.full_name }} kullanıcısını ve tüm verilerini silmek istediğinizden emin misiniz?')">
-                                    <button type="submit" class="btn btn-red">🗑 Sil</button>
+                                    onsubmit="return confirm('{{ _(\'admin.confirm_delete\').format(name=u.full_name) }}')">
+                                    <button type="submit" class="btn btn-red">🗑 {{ _('admin.btn_delete') }}</button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">Henüz kullanıcı yok.
-                        </td>
+                        <td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">{{
+                            _('admin.empty_users') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

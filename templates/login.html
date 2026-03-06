@@ -6,11 +6,11 @@
 <div class="min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <i class="fa-solid fa-droplet text-blue-500 text-5xl mb-4"></i>
-        <h2 class="text-3xl font-bold tracking-tight text-slate-900">Hoş Geldiniz</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900">{{ _('login.title') }}</h2>
         <p class="mt-2 text-sm text-slate-600">
-            Hesabınız yok mu?
-            <a href="/register" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">Hesap
-                Oluştur</a>
+            {{ _('login.no_account') }}
+            <a href="/register" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">{{
+                _('login.create_account') }}</a>
         </p>
     </div>
 
@@ -59,7 +59,8 @@
 
             <form class="space-y-6" action="/login" method="POST">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-slate-700">E-posta Adresi</label>
+                    <label for="email" class="block text-sm font-medium text-slate-700">{{ _('login.email_label')
+                        }}</label>
                     <div class="mt-1">
                         <input id="email" name="email" type="email" autocomplete="email" required
                             class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
@@ -67,7 +68,8 @@
                 </div>
 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-slate-700">Şifre</label>
+                    <label for="password" class="block text-sm font-medium text-slate-700">{{ _('login.password_label')
+                        }}</label>
                     <div class="mt-1">
                         <input id="password" name="password" type="password" autocomplete="current-password" required
                             class="block w-full appearance-none rounded-xl border border-slate-300 px-4 py-3 placeholder-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm text-lg transition-colors">
@@ -79,23 +81,20 @@
                         <input id="remember_me" name="remember_me" type="checkbox"
                             class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                         <label for="remember_me" class="ml-2 block text-sm text-slate-900">
-                            Beni Hatırla
+                            {{ _('login.remember_me') }}
                         </label>
                     </div>
 
                     <div class="text-sm">
                         <a href="/auth/forgot-password"
                             class="font-medium text-blue-600 hover:text-blue-500 transition-colors">
-                            Şifremi Unuttum?
+                            {{ _('login.forgot_password') }}
                         </a>
                     </div>
                 </div>
 
                 <div>
-                    <button type="submit"
-                        class="flex w-full justify-center rounded-xl border border-transparent bg-blue-600 py-3 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform active:scale-95 text-lg">
-                        Giriş Yap
-                    </button>
+                    <button type="submit" {{ _('login.login_btn') }} </button>
                 </div>
 
                 <div class="mt-6">
@@ -104,7 +103,7 @@
                             <div class="w-full border-t border-slate-300"></div>
                         </div>
                         <div class="relative flex justify-center text-sm">
-                            <span class="bg-white px-2 text-slate-500">veya</span>
+                            <span class="bg-white px-2 text-slate-500">{{ _('login.or') }}</span>
                         </div>
                     </div>
 
@@ -112,12 +111,12 @@
                         <a href="/auth/google/login"
                             class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
                             <i class="fa-brands fa-google text-red-500 text-lg"></i>
-                            Google ile Devam Et
+                            {{ _('login.google_btn') }}
                         </a>
                         <a href="/apple-soon"
                             class="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 px-4 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-colors">
                             <i class="fa-brands fa-apple text-lg"></i>
-                            Apple ile Devam Et
+                            {{ _('login.apple_btn') }}
                         </a>
                     </div>
                 </div>

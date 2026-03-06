@@ -3,11 +3,12 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import datetime
-import crud, schemas, database, models
+import crud, schemas, database, models, i18n
 from routers.auth import get_current_user_from_cookie
 
 router = APIRouter(tags=["Measurements"])
 templates = Jinja2Templates(directory="templates")
+i18n.setup_templates(templates)
 
 @router.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, db: Session = Depends(database.get_db)):

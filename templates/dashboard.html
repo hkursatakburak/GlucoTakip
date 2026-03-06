@@ -6,13 +6,13 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Özetiniz</h1>
-            <p class="mt-1 text-sm text-slate-500">Değerlerinizi buradan takip edebilirsiniz.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">{{ _('dashboard.title') }}</h1>
+            <p class="mt-1 text-sm text-slate-500">{{ _('dashboard.desc') }}</p>
         </div>
         <div>
             <a href="/add-measurement"
                 class="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 transition-all transform active:scale-95 text-center w-full sm:w-auto">
-                <i class="fa-solid fa-plus mr-2"></i> Yeni Ölçüm Ekle
+                <i class="fa-solid fa-plus mr-2"></i> {{ _('dashboard.add_btn') }}
             </a>
         </div>
     </div>
@@ -20,14 +20,14 @@
     <!-- Charts Section -->
     <div class="glass-panel rounded-2xl p-4 sm:p-6 shadow-sm">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-slate-900">Şeker Grafiği</h3>
+            <h3 class="text-lg font-medium text-slate-900">{{ _('dashboard.chart_title') }}</h3>
             <div class="flex bg-slate-100 p-1 rounded-lg">
                 <button onclick="updateChart('week')" id="btn-week"
-                    class="px-3 py-1 text-sm font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">7
-                    Gün</button>
+                    class="px-3 py-1 text-sm font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all">{{
+                    _('dashboard.chart_week') }}</button>
                 <button onclick="updateChart('month')" id="btn-month"
-                    class="px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all">30
-                    Gün</button>
+                    class="px-3 py-1 text-sm font-medium rounded-md text-slate-500 hover:text-slate-800 transition-all">{{
+                    _('dashboard.chart_month') }}</button>
             </div>
         </div>
         <div class="h-64 sm:h-80 w-full relative">
@@ -37,7 +37,7 @@
 
     <!-- Recent Measurements List -->
     <div>
-        <h3 class="text-lg font-medium text-slate-900 mb-4">Son Ölçümler</h3>
+        <h3 class="text-lg font-medium text-slate-900 mb-4">{{ _('dashboard.recent_title') }}</h3>
         <div class="glass-panel shadow-sm overflow-hidden sm:rounded-xl">
             {% if measurements %}
             <ul class="divide-y divide-slate-200">
@@ -68,7 +68,7 @@
             {% else %}
             <div class="p-8 text-center text-slate-500">
                 <i class="fa-solid fa-clipboard-list text-4xl mb-3 text-slate-300"></i>
-                <p>Henüz bir ölçüm bulunmuyor. Yeni bir kayıt ekleyin.</p>
+                <p>{{ _('dashboard.no_measurements') }}</p>
             </div>
             {% endif %}
         </div>
@@ -76,21 +76,22 @@
 
     <!-- Export Section -->
     <div class="glass-panel rounded-2xl p-6 shadow-sm border border-slate-200 border-t mt-4">
-        <h3 class="text-lg font-medium text-slate-900 mb-4">Rapor Çıktısı Al (Excel)</h3>
+        <h3 class="text-lg font-medium text-slate-900 mb-4">{{ _('dashboard.export_title') }}</h3>
         <form action="/export" method="POST" class="flex flex-col sm:flex-row gap-4 items-end">
             <div class="w-full sm:w-64">
-                <label for="date_range" class="block text-sm font-medium text-slate-700 mb-1">Tarih Aralığı</label>
+                <label for="date_range" class="block text-sm font-medium text-slate-700 mb-1">{{
+                    _('dashboard.export_date_range') }}</label>
                 <select id="date_range" name="date_range"
                     class="block w-full rounded-xl border-slate-300 py-3 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm border bg-white">
-                    <option value="7">Son 7 Gün</option>
-                    <option value="30">Son 1 Ay</option>
-                    <option value="90">Son 3 Ay</option>
-                    <option value="all">Tüm Zamanlar</option>
+                    <option value="7">{{ _('dashboard.export_7d') }}</option>
+                    <option value="30">{{ _('dashboard.export_30d') }}</option>
+                    <option value="90">{{ _('dashboard.export_90d') }}</option>
+                    <option value="all">{{ _('dashboard.export_all') }}</option>
                 </select>
             </div>
             <button type="submit"
                 class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors">
-                <i class="fa-solid fa-file-excel mr-2"></i> Excel İndir
+                <i class="fa-solid fa-file-excel mr-2"></i> {{ _('dashboard.export_btn') }}
             </button>
         </form>
     </div>
