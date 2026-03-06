@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import models, database, crud
-from routers import auth, measurements, reports, admin
+from routers import auth, measurements, reports, admin, api_mobile
 
 from sqlalchemy import text
 
@@ -47,6 +47,7 @@ app.include_router(auth.router)
 app.include_router(measurements.router)
 app.include_router(reports.router)
 app.include_router(admin.router)
+app.include_router(api_mobile.router)
 
 @app.get("/set-language", tags=["Settings"])
 def set_language(lang: str, request: Request, db: Session = Depends(database.get_db)):
