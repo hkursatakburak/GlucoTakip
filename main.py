@@ -25,6 +25,13 @@ try:
 except Exception:
     pass  # Column already exists or another error occurred
 
+# Auto-migrate: Add 'data_consent' column if missing
+try:
+    with database.engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN data_consent BOOLEAN DEFAULT FALSE"))
+except Exception:
+    pass  # Column already exists or another error occurred
+
 app = FastAPI(title="GlucoTakip", description="Şeker Takip Uygulaması")
 
 # SessionMiddleware is required for Authlib OAuth
@@ -54,6 +61,14 @@ def set_language(lang: str, request: Request, db: Session = Depends(database.get
             crud.update_user_language(db, user.id, lang)
             
     return response
+
+@app.get("/privacy", tags=["Pages"])
+def privacy_page(request: Request):
+    from fastapi.templating import Jinja2Templates
+    import i18n
+    templates = Jinja2Templates(directory="templates")
+    i18n.setup_templates(templates)
+    return templates.TemplateResponse("privacy.html", {"request": request})
 
 # .well-known klasörünü dışarı açıyoruz
 os.makedirs(".well-known", exist_ok=True)

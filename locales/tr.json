@@ -19,28 +19,29 @@
         "Rastgele": "Rastgele"
     },
     "login": {
-        "title": "Hoş Geldiniz",
+        "title": "Hesabınıza giriş yapın",
         "no_account": "Hesabınız yok mu?",
-        "create_account": "Hesap Oluştur",
-        "email_label": "E-posta Adresi",
+        "register_link": "Buradan kayıt olun",
+        "email_label": "E-posta adresi",
         "password_label": "Şifre",
-        "remember_me": "Beni Hatırla",
-        "forgot_password": "Şifremi Unuttum?",
+        "remember_me": "Beni hatırla",
+        "forgot_password": "Şifremi unuttum?",
         "login_btn": "Giriş Yap",
-        "or": "veya",
-        "google_btn": "Google ile Devam Et",
-        "apple_btn": "Apple ile Devam Et"
+        "or": "Veya şununla devam et",
+        "google_btn": "Google ile Giriş Yap",
+        "apple_btn": "Apple ile Giriş Yap",
+        "sso_consent": "Giriş yaparak <a href='/privacy' class='text-blue-500 hover:underline'>Gizlilik Politikasını</a> ve yapay zeka araştırmaları için anonim veri kullanımını kabul etmiş olursunuz."
     },
     "register": {
-        "title": "Kayıt Ol",
+        "title": "Hesap oluşturun",
         "has_account": "Zaten hesabınız var mı?",
-        "login_link": "Giriş Yap",
+        "login_link": "Buradan giriş yapın",
         "name_label": "Ad Soyad",
-        "email_label": "E-posta Adresi",
+        "email_label": "E-posta adresi",
         "password_label": "Şifre",
-        "consent_title": "Bilimsel İzin",
-        "consent_desc": "Verilerimin anonim olarak bilimsel çalışmalarda kullanılmasına izin veriyorum.",
-        "register_btn": "Hesap Oluştur"
+        "consent_title": "Verilerimin anonimleştirilerek yapay zeka ve sağlık araştırmalarında kullanılmasına izin veriyorum.",
+        "consent_desc": "Kullanım Şartları ve Gizlilik Politikası",
+        "register_btn": "Kayıt Ol"
     },
     "dashboard": {
         "title": "Özetiniz",
@@ -63,6 +64,18 @@
         "wa_text": "GlucoTakip Raporum: Son ölçümlerim...",
         "pdf_title": "GlucoTakip Raporu",
         "pdf_date": "Rapor Tarihi"
+    },
+    "privacy": {
+        "title": "Gizlilik Politikası ve Veri İzni",
+        "section1_title": "1. %100 Anonim Veri Toplama",
+        "section1_text": "GlucoTakip'e girdiğiniz sağlık ölçümleri ve veriler, araştırmalar için kullanıldığında tamamen anonimleştirilir. Adınız, e-postanız ve kişisel kimlik bilgileriniz tıbbi kayıtlarınızla asla ilişkilendirilmez.",
+        "section2_title": "2. Yapay Zeka Model Eğitimi",
+        "section2_text": "Diyabet yönetimini iyileştirmek amacıyla, elde edilen sayısal glukoz verileriniz, kategorileriniz ve saatleriniz gelecekteki Yapay Zeka (AI) tahmin modellerini eğitmek için kullanılabilir. Bu modeller, uygulamanın gelecekte size daha akıllı ve kişiselleştirilmiş içgörüler sunmasına yardımcı olacaktır.",
+        "section3_title": "3. Güvenlik ve Gizlilik Garantisi",
+        "section3_text": "Uygulamamız endüstri standardı şifreleme kullanır. Sağlık verileriniz asla üçüncü taraf pazarlama ajanslarına satılmaz. Yalnızca GlucoTakip ekosistemi içerisindeki tıbbi algoritmaların iyileştirilmesi için kullanılır.",
+        "commitment_title": "Size Olan Taahhüdümüz",
+        "commitment_text": "İzin vererek, diyabet yönetiminin daha akıllı ve erişilebilir olduğu bir geleceğe katkıda bulunuyorsunuz. İstediğiniz zaman hesabınızı ve tüm verilerinizi kalıcı olarak silme hakkınızı saklı tutarsınız.",
+        "back_btn": "Geri Dön"
     },
     "admin": {
         "badge": "Yönetici",

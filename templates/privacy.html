@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-12 px-6">
+    <div class="glass-panel p-8 rounded-3xl shadow-lg border border-slate-100">
+        <h1 class="text-3xl font-bold text-slate-900 mb-6">{{ _('privacy.title') }}</h1>
+        
+        <div class="space-y-6 text-slate-700 leading-relaxed">
+            
+            <section>
+                <h2 class="text-xl font-semibold mb-2 text-slate-800">{{ _('privacy.section1_title') }}</h2>
+                <p>{{ _('privacy.section1_text') }}</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold mb-2 text-slate-800">{{ _('privacy.section2_title') }}</h2>
+                <p>{{ _('privacy.section2_text') }}</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold mb-2 text-slate-800">{{ _('privacy.section3_title') }}</h2>
+                <p>{{ _('privacy.section3_text') }}</p>
+            </section>
+            
+            <section class="bg-blue-50 border border-blue-200 p-4 rounded-xl mt-8">
+                <div class="flex items-start">
+                    <i class="fa-solid fa-shield-halved text-blue-500 text-xl mt-1 mr-3"></i>
+                    <div>
+                        <h3 class="font-bold text-blue-900 mb-1">{{ _('privacy.commitment_title') }}</h3>
+                        <p class="text-sm text-blue-800">{{ _('privacy.commitment_text') }}</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-slate-200 text-center">
+            <a href="javascript:history.back()" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i> {{ _('privacy.back_btn') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

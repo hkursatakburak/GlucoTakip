@@ -19,28 +19,29 @@
         "Rastgele": "Random"
     },
     "login": {
-        "title": "Welcome",
+        "title": "Sign in to your account",
         "no_account": "Don't have an account?",
-        "create_account": "Create Account",
-        "email_label": "Email Address",
+        "register_link": "Sign up here",
+        "email_label": "Email address",
         "password_label": "Password",
-        "remember_me": "Remember Me",
-        "forgot_password": "Forgot Password?",
-        "login_btn": "Login",
-        "or": "or",
-        "google_btn": "Continue with Google",
-        "apple_btn": "Continue with Apple"
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "login_btn": "Sign in",
+        "or": "Or continue with",
+        "google_btn": "Sign in with Google",
+        "apple_btn": "Sign in with Apple",
+        "sso_consent": "By logging in, you agree to our <a href='/privacy' class='text-blue-500 hover:underline'>Privacy Policy</a> and anonymous data usage for AI."
     },
     "register": {
-        "title": "Register",
+        "title": "Create your account",
         "has_account": "Already have an account?",
-        "login_link": "Login",
+        "login_link": "Sign in here",
         "name_label": "Full Name",
-        "email_label": "Email Address",
+        "email_label": "Email address",
         "password_label": "Password",
-        "consent_title": "Scientific Consent",
-        "consent_desc": "I consent to my data being used anonymously for scientific research.",
-        "register_btn": "Create Account"
+        "consent_title": "I consent to the pseudonymized processing of my data for AI and health research.",
+        "consent_desc": "Read our Privacy Policy and Terms of Use",
+        "register_btn": "Sign up"
     },
     "dashboard": {
         "title": "Your Summary",
@@ -63,6 +64,18 @@
         "wa_text": "My GlucoTakip Report: Recent measurements...",
         "pdf_title": "GlucoTakip Report",
         "pdf_date": "Date of Generation"
+    },
+    "privacy": {
+        "title": "Privacy Policy & Data Consent",
+        "section1_title": "1. 100% Anonymous Data Collection",
+        "section1_text": "Your health measurements and data entered into GlucoTakip are stored completely anonymously when used for research. Your name, email, and personal identifiers are never associated with your medical records.",
+        "section2_title": "2. Artificial Intelligence Training",
+        "section2_text": "To improve global health outcomes, your numerical glucose data, categories, and times may be used to train predictive Artificial Intelligence models. These models will help GlucoTakip offer smarter, personalized insights in the future.",
+        "section3_title": "3. Security & Non-Disclosure",
+        "section3_text": "We employ industry-standard encryption. Your health data is never sold to third-party marketing agencies. It is strictly utilized for the betterment of medical algorithms within the GlucoTakip ecosystem.",
+        "commitment_title": "Our Commitment to You",
+        "commitment_text": "By opting in, you are contributing to a future where diabetes management is smarter and more accessible. You maintain the right to delete your account entirely at any time.",
+        "back_btn": "Go Back"
     },
     "admin": {
         "badge": "Admin",
