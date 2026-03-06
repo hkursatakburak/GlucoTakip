@@ -270,9 +270,10 @@
 
     // Share to WhatsApp
     function shareWhatsApp() {
-        {% if not measurements %}
+        const hasMeasurements = {{ 'true' if measurements else 'false' }};
+        if (!hasMeasurements) {
             alert("{{ _('dashboard.no_measurements') }}");
-        {% else %}
+        } else {
             let text = "{{ _('dashboard.wa_text') }}\n\n";
             {% for m in measurements[:3] %}
             text += "• {{ m.measured_at.strftime('%d.%m.%Y %H:%M') }} | {{ _('categories.' ~ m.category.value) }}: {{ m.value }} mg/dL\n";
