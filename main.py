@@ -74,7 +74,7 @@ def privacy_page(request: Request):
 def ads_txt():
     """Serve ads.txt for Google AdSense domain verification."""
     from fastapi.responses import PlainTextResponse
-    content = "google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0"
+    content = "google.com, pub-1880768238764846, DIRECT, f08c47fec0942fa0"
     return PlainTextResponse(content=content)
 
 # .well-known klasörünü dışarı açıyoruz
