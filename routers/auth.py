@@ -10,6 +10,8 @@ from email_utils import send_email, build_verification_email, build_password_res
 
 router = APIRouter(tags=["Authentication"])
 templates = Jinja2Templates(directory="templates")
+import i18n
+i18n.setup_templates(templates)
 
 oauth = OAuth()
 
