@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, Request, Form, status
-from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.responses import RedirectResponse, StreamingResponse
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+import io
 import crud, database
 from routers.auth import get_current_user_from_cookie
 import pandas as pd
-import os
 import i18n
 
 router = APIRouter(tags=["Reports"])
@@ -50,17 +50,17 @@ async def export_data(
         })
         
     df = pd.DataFrame(data)
-    
-    if not os.path.exists("temp"):
-        os.makedirs("temp")
-    file_path = f"temp/diabetes_report_{user.id}.xlsx"
-    
-    with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
+
+    # Write completely in-memory — no temp files that disappear on Render restarts
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Measurements")
+    # IMPORTANT: seek must be OUTSIDE the 'with' block so openpyxl fully flushes the file
+    output.seek(0)
     
-    return FileResponse(
-        path=file_path,
-        filename=f"diyabet_raporu_{datetime.now().strftime('%Y%m%d')}.xlsx",
+    filename = f"GlucoTakip_{datetime.now().strftime('%Y%m%d')}.xlsx"
+    return StreamingResponse(
+        output,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        background=None
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
