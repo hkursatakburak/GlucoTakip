@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
+import i18n
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
@@ -64,8 +66,6 @@ def set_language(lang: str, request: Request, db: Session = Depends(database.get
 
 @app.get("/privacy", tags=["Pages"])
 def privacy_page(request: Request):
-    from fastapi.templating import Jinja2Templates
-    import i18n
     templates = Jinja2Templates(directory="templates")
     i18n.setup_templates(templates)
     return templates.TemplateResponse("privacy.html", {"request": request})
